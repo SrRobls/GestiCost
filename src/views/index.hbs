@@ -1,0 +1,113 @@
+<button onclick="openModal();" class="cssbuttons-io">
+  <span>
+    Crear Transacción
+  </span>
+</button>
+
+<div class="modal" id="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="section crear-trans">
+      <form method="POST" action="/crear-transaccion">
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-trans">Nombre</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-trans" name="nombre" />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="costo-trans">Costo</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Costo" id="costo-trans" name="costo" />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="metodo-pago">Método de Pago</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="metodo-pago" name="metodo_pago">
+                    <option value="credito">Crédito</option>
+                    <option value="debito">Débito</option>
+                    <option value="efectivo">Efectivo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="categoria-trans">Categoría</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="categoria-trans" name="categoria">
+                    <option value="comida">Comida</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="entretenimiento">Entretenimiento</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-full">
+            <div class="field">
+              <label class="label" for="descripcion-trans">Descripción</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans"
+                  name="descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" type="submit">Enviar</button>
+          </div>
+          <div class="control">
+            <button onclick="closeModal()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  {{!-- <button class="modal-close is-large" aria-label="close"></button> --}}
+</div>
+
+<div class="transacciones">
+  {{#if transacciones}}
+  <table class="table is-fullwidth">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Costo</th>
+        <th>Método de Pago</th>
+        <th>Categoría</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each transacciones}}
+      <tr>
+        <td>{{nombre}}</td>
+        <td>{{costo}}</td>
+        <td>{{metodo}}</td>
+        <td>{{categoria}}</td>
+        <td>{{descripcion}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{else}}
+  <p>No hay transacciones</p>
+  {{/if}}
+</div>
