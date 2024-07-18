@@ -1,8 +1,12 @@
+<br>
+<br>
 <button onclick="openModal();" class="cssbuttons-io">
   <span>
     Crear Transacción
   </span>
 </button>
+<br>
+<br>
 
 <div class="modal" id="modal">
   <div class="modal-background"></div>
@@ -12,7 +16,7 @@
         <div class="columns is-multiline">
           <div class="column is-half">
             <div class="field">
-              <label class="label" for="nombre-trans">Nombre</label>
+              <label class="label" for="nombre-trans">Nombre de Transacción</label>
               <div class="control">
                 <input class="input" type="text" placeholder="Nombre" id="nombre-trans" name="nombre" />
               </div>
@@ -84,6 +88,14 @@
 </div>
 
 <div class="transacciones">
+  {{!-- Para pintar las transacciones hacemos ls siguiente:
+  - en hbs el codigo js se escribe dentro de {{codigo}}, entoncesdecimos qe si hay transacciones (que la mandamos como
+  response en la peticion), entonces haga una tabla de estas
+  - luego por cada una de las transacciones que se obtiene se usa el each para que las pinte, notemos que como desde la
+  peticiones lo mandamos como datos del response podemos aceder
+  a las carecteriticas de cada una mediante {{caracteristica}}
+  - dato important mediante {{@key accedemos al id de la transaccion dentro de la base de datos de firebase. Noten que
+  lo usamos para obtener su identificacion para eliminar o editar}}--}}
   {{#if transacciones}}
   <table class="table is-fullwidth">
     <thead>
@@ -93,6 +105,7 @@
         <th>Método de Pago</th>
         <th>Categoría</th>
         <th>Descripción</th>
+        <th>Accion</th>
       </tr>
     </thead>
     <tbody>
@@ -103,11 +116,94 @@
         <td>{{metodo}}</td>
         <td>{{categoria}}</td>
         <td>{{descripcion}}</td>
+        <td>
+          <a href="/eliminar-transaccion/{{@key}}"><button class="button is-danger">Eliminar</button></a>
+          <button
+            onclick="openModalEdit('{{@key}}', '{{nombre}}', '{{costo}}', '{{metodo}}', '{{categoria}}', '{{descripcion}}');"
+            class="button is-primary">Editar</button>
       </tr>
       {{/each}}
     </tbody>
   </table>
   {{else}}
-  <p>No hay transacciones</p>
+  <p>No hay transacciones ¡Crea una!</p>
   {{/if}}
+</div>
+
+<div class="modal" id="modal-edit">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="section crear-trans">
+      <form id="form-edit" method="POST">
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-trans">Nombre</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-trans-edit" name="nombre" />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="costo-trans">Costo</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Costo" id="costo-trans-edit" name="costo" />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="metodo-pago">Método de Pago</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="metodo-pago-edit" name="metodo_pago">
+                    <option value="credito">Crédito</option>
+                    <option value="debito">Débito</option>
+                    <option value="efectivo">Efectivo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="categoria-trans">Categoría</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="categoria-trans-edit" name="categoria">
+                    <option value="comida">Comida</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="entretenimiento">Entretenimiento</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-full">
+            <div class="field">
+              <label class="label" for="descripcion-trans">Descripción</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit"
+                  name="descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" type="submit">Editar</button>
+          </div>
+          <div class="control">
+            <button onclick="closeModalEdit()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

@@ -33,27 +33,79 @@ router.get('/2', (req, res) => {
     res.render('prueba');
 });
 
+// En JavaScript, async y await son palabras clave que se utilizan en conjunto para trabajar con funciones asíncronas de manera más sencilla y legible.
+// Cuando una función se declara con la palabra clave async, se convierte en una función asíncrona. 
+// Asincronia significa que las tareas se ejecutan en segundo plano y la ejecución del programa continúa sin esperar a que se completen las tareas en segundo plano.
+// Por otro lado, await se utiliza dentro de una función asíncrona para esperar a que una promesa se resuelva o se rechace. lo que significa que la ejecución de la función se pausa hasta que la promesa se resuelva. 
+// por ejemplo await db.ref('transacciones').push(transaccion); se pausará hasta que la promesa (que es la función push) se resuelva o se rechace.
+
+
 // Crea una ruta para que la usamos para crear una transacción
-router.post('/crear-transaccion', (req, res) => {
-    // Obtenemos los datos del formulario desde la vista de index.hbs
-    console.log(req.body);
-    const transaccion = {
+// por eje,plo se coloca async para que la función sea asíncrona y se pueda usar await que es algo muy importante para trabajar con base de datos ya que se espera a que se cree la transacción en la base de datos de Firebase
+router.post('/crear-transaccion', async (req, res) => {
+    try {
+        // Obtenemos los datos del formulario desde la vista de index.hbs
+        console.log(req.body);
+        const transaccion = {
+            nombre: req.body.nombre,
+            costo: req.body.costo,
+            metodo: req.body.metodo_pago,
+            categoria: req.body.categoria,
+            descripcion: req.body.descripcion
+        };
+        // Guardamos la transacción en la base de datos de Firebase
+
+        // por ejemplo await db.ref('transacciones').push(transaccion); se pausará hasta que la promesa (que es la función push) se resuelva o se rechace.
+        await db.ref('transacciones').push(transaccion);
+        res.status(200).redirect('/');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al guardar la transacción');
+    }
+});
+
+// Ruta para eliminar una transacción según su id      
+router.get('/eliminar-transaccion/:id', async (req, res) => {
+    const transaccionId = req.params.id;
+    
+    try {
+        // Eliminar la transacción de la base de datos de Firebase
+        await db.ref('transacciones').child(transaccionId).remove();
+        res.status(200).redirect('/');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al eliminar la transacción');
+    }
+});
+
+// Ruta para editar una transacción según su id
+router.post('/editar-transaccion/:id', async (req, res) => {
+    const transaccionId = req.params.id;
+    // Obtenemos los datos del formulario de edicion desde la vista de index.hbs
+    const updatedTransaccion = {
         nombre: req.body.nombre,
         costo: req.body.costo,
         metodo: req.body.metodo_pago,
         categoria: req.body.categoria,
         descripcion: req.body.descripcion
     };
-    // Guardamos la transacción en la base de datos de Firebase
-    db.ref('transacciones').push(transaccion, (error) => {
-        if (error) {
-            console.error(error);
-            res.status(500).send('Error al guardar la transacción');
-        } else {
-            res.status(200).redirect('/');
-        }
-    });
+
+    try {
+        // Actualizar la transacción en la base de datos de Firebase
+        await db.ref('transacciones').child(transaccionId).update(updatedTransaccion);
+        res.status(200).redirect('/');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al editar la transacción');
+    }
 });
+
+
+router.get('/3', (req, res) => {
+    res.render('prueba2');
+});
+
+
 
 module.exports = router;
 
