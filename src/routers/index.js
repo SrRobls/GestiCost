@@ -15,8 +15,12 @@ admin.initializeApp({
 
 const db = admin.database();
 
-
 router.get('/', (req, res) => {
+    res.render('login');
+});
+
+
+router.get('/trasacciones', (req, res) => {
     // Obtenemos los datos de la base de datos de Firebase
     db.ref('transacciones').once('value', (snapshot) => {
         // Guardamos los datos en la variable data_transacción
@@ -101,9 +105,6 @@ router.post('/editar-transaccion/:id', async (req, res) => {
 });
 
 
-router.get('/3', (req, res) => {
-    res.render('prueba2');
-});
 
 
 
