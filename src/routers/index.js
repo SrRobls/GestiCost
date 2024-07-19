@@ -15,8 +15,12 @@ admin.initializeApp({
 
 const db = admin.database();
 
-
 router.get('/', (req, res) => {
+    res.render('login');
+});
+
+
+router.get('/trasacciones', (req, res) => {
     // Obtenemos los datos de la base de datos de Firebase
     db.ref('transacciones').once('value', (snapshot) => {
         // Guardamos los datos en la variable data_transacción
@@ -57,7 +61,7 @@ router.post('/crear-transaccion', async (req, res) => {
 
         // por ejemplo await db.ref('transacciones').push(transaccion); se pausará hasta que la promesa (que es la función push) se resuelva o se rechace.
         await db.ref('transacciones').push(transaccion);
-        res.status(200).redirect('/');
+        res.status(200).redirect('/trasacciones');
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al guardar la transacción');
@@ -71,7 +75,7 @@ router.get('/eliminar-transaccion/:id', async (req, res) => {
     try {
         // Eliminar la transacción de la base de datos de Firebase
         await db.ref('transacciones').child(transaccionId).remove();
-        res.status(200).redirect('/');
+        res.status(200).redirect('/trasacciones');
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al eliminar la transacción');
@@ -93,7 +97,7 @@ router.post('/editar-transaccion/:id', async (req, res) => {
     try {
         // Actualizar la transacción en la base de datos de Firebase
         await db.ref('transacciones').child(transaccionId).update(updatedTransaccion);
-        res.status(200).redirect('/');
+        res.status(200).redirect('/trasacciones');
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al editar la transacción');
@@ -101,9 +105,6 @@ router.post('/editar-transaccion/:id', async (req, res) => {
 });
 
 
-router.get('/3', (req, res) => {
-    res.render('prueba2');
-});
 
 
 
