@@ -2,16 +2,11 @@
 
 // usmoas el router de express para crear las rutas de la aplicación y exportamos el router para poder usarlo en otros archivos
 const {Router} = require('express');
-
+// Importamos la base de datos de Firebase para poder usarla en las rutas
+const { admin } = require('../scripts/firebase');
 // router es un objeto que nos permite crear rutas en nuestra aplicación
 const router = Router();
-var admin = require("firebase-admin");
-var serviceAccount = require("../../gesticost-48429-firebase-adminsdk-t36fu-d9f1cd0b2b.json");
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://gesticost-48429-default-rtdb.firebaseio.com"
-});
 
 const db = admin.database();
 

@@ -29,6 +29,9 @@ app.use(express.json());
 // ARCHIVOS ESTÁTICOS
 // Configuramos la carpeta public para que los archivos estáticos puedan ser accedidos
 app.use(express.static(path.join(__dirname, 'public')));
+// Configuramos la carpeta scripts para que los archivos de scripts puedan ser accedidos
+app.use(express.static(path.join(__dirname, 'scripts')));
+
 
 // RUTAS
 // las rutas son archivos que contienen las peticiones y respuestas del servidor
