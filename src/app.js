@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const { engine } = require('express-handlebars');
 // Importamos path para manejar las rutas de los archivos
 const path = require('path');
+
 // Creamos una instancia de express para poder usar sus métodos
 const app = express();
 

@@ -3,12 +3,12 @@
 // usmoas el router de express para crear las rutas de la aplicación y exportamos el router para poder usarlo en otros archivos
 const {Router} = require('express');
 // Importamos la base de datos de Firebase para poder usarla en las rutas
-const { admin } = require('../scripts/firebase');
+const { admin } = require('../firebase');
 // router es un objeto que nos permite crear rutas en nuestra aplicación
 const router = Router();
 
 
-const db = admin.database();
+const db = admin.database();;
 
 router.get('/', (req, res) => {
     res.render('login');
