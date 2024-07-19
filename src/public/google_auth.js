@@ -28,7 +28,7 @@ google_login.addEventListener('click', async () => {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         console.log(user);
-        window.location = '/trasacciones';
+        localStorage.setItem('user', JSON.stringify(user));
     } catch (error) {
         console.error(error);
     }
