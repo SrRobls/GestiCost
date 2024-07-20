@@ -15,17 +15,41 @@ router.get('/', (req, res) => {
 });
 
 
+// router.get('/transacciones', (req, res) => {
+//     // Obtenemos los datos de la base de datos de Firebase
+//     db.ref('transacciones').once('value', (snapshot) => {
+//         // Guardamos los datos en la variable data_transacción
+//         const data_transacción = snapshot.val();
+//         console.log(data_transacción);
+//         // Aqui se renderiza la vista index.hbs de la carpeta views, entonces cada vez que se haga una petición a la ruta principal se renderizará la vista index.hbs
+//         // y se le pasará la variable transacciones con los datos de la base de datos de Firebase
+//         res.render('index', {transacciones: data_transacción});
+//     });
+// });
+
 router.get('/transacciones', (req, res) => {
-    // Obtenemos los datos de la base de datos de Firebase
-    db.ref('transacciones').once('value', (snapshot) => {
-        // Guardamos los datos en la variable data_transacción
-        const data_transacción = snapshot.val();
-        console.log(data_transacción);
-        // Aqui se renderiza la vista index.hbs de la carpeta views, entonces cada vez que se haga una petición a la ruta principal se renderizará la vista index.hbs
-        // y se le pasará la variable transacciones con los datos de la base de datos de Firebase
-        res.render('index', {transacciones: data_transacción});
-    });
+    res.render('index'); // Renderiza la vista index.hbs
 });
+
+router.get('/api/transacciones', async (req, res) => {
+    const idToken = req.headers.authorization.split('Bearer ')[1];
+
+    try {
+        // Verificar el token de autenticación
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+
+        // Obtener las transacciones del usuario autenticado
+        const snapshot = await db.ref('transacciones').orderByChild('uid').equalTo(uid).once('value');
+        const transacciones = snapshot.val();
+
+        res.json(transacciones);
+    } catch (error) {
+        console.error('Error al verificar el token:', error);
+        res.status(401).json({ error: 'No autorizado' });
+    }
+});
+
 
 router.get('/2', (req, res) => {
     // Aca otra ejemplo y es que ahora cuando se mandan a llamar la ruta /2 se renderiza la vista prueba.hbs
@@ -41,20 +65,48 @@ router.get('/2', (req, res) => {
 
 // Crea una ruta para que la usamos para crear una transacción
 // por eje,plo se coloca async para que la función sea asíncrona y se pueda usar await que es algo muy importante para trabajar con base de datos ya que se espera a que se cree la transacción en la base de datos de Firebase
+// router.post('/crear-transaccion', async (req, res) => {
+//     try {
+//         // Obtenemos los datos del formulario desde la vista de index.hbs
+//         console.log(req.body);
+//         const transaccion = {
+//             nombre: req.body.nombre,
+//             costo: req.body.costo,
+//             metodo: req.body.metodo_pago,
+//             categoria: req.body.categoria,
+//             descripcion: req.body.descripcion
+//         };
+//         // Guardamos la transacción en la base de datos de Firebase
+
+//         // por ejemplo await db.ref('transacciones').push(transaccion); se pausará hasta que la promesa (que es la función push) se resuelva o se rechace.
+//         await db.ref('transacciones').push(transaccion);
+//         res.status(200).redirect('/transacciones');
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Error al guardar la transacción');
+//     }
+// });
+
 router.post('/crear-transaccion', async (req, res) => {
+    const idToken = req.headers.authorization.split('Bearer ')[1];
+    
     try {
+        // Verificar el token de autenticación
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+        
         // Obtenemos los datos del formulario desde la vista de index.hbs
         console.log(req.body);
         const transaccion = {
+            uid: uid,  // Incluir el UID del usuario en la transacción
             nombre: req.body.nombre,
             costo: req.body.costo,
             metodo: req.body.metodo_pago,
             categoria: req.body.categoria,
             descripcion: req.body.descripcion
         };
-        // Guardamos la transacción en la base de datos de Firebase
 
-        // por ejemplo await db.ref('transacciones').push(transaccion); se pausará hasta que la promesa (que es la función push) se resuelva o se rechace.
+        // Guardamos la transacción en la base de datos de Firebase
         await db.ref('transacciones').push(transaccion);
         res.status(200).redirect('/transacciones');
     } catch (error) {
@@ -62,6 +114,7 @@ router.post('/crear-transaccion', async (req, res) => {
         res.status(500).send('Error al guardar la transacción');
     }
 });
+
 
 // Ruta para eliminar una transacción según su id      
 router.get('/eliminar-transaccion/:id', async (req, res) => {

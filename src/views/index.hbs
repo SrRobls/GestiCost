@@ -12,7 +12,7 @@
   <div class="modal-background"></div>
   <div class="modal-content">
     <div class="section crear-trans">
-      <form method="POST" action="/crear-transaccion">
+      <form method="POST" id="crear-transaccion-form">
         <div class="columns is-multiline">
           <div class="column is-half">
             <div class="field">
@@ -87,7 +87,7 @@
   {{!-- <button class="modal-close is-large" aria-label="close"></button> --}}
 </div>
 
-<div class="transacciones">
+<div id="transacciones" class="transacciones">
   {{!-- Para pintar las transacciones hacemos ls siguiente:
   - en hbs el codigo js se escribe dentro de {{codigo}}, entoncesdecimos qe si hay transacciones (que la mandamos como
   response en la peticion), entonces haga una tabla de estas
@@ -95,39 +95,8 @@
   peticiones lo mandamos como datos del response podemos aceder
   a las carecteriticas de cada una mediante {{caracteristica}}
   - dato important mediante {{@key accedemos al id de la transaccion dentro de la base de datos de firebase. Noten que
-  lo usamos para obtener su identificacion para eliminar o editar}}--}}
-  {{#if transacciones}}
-  <table class="table is-fullwidth">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Costo</th>
-        <th>Método de Pago</th>
-        <th>Categoría</th>
-        <th>Descripción</th>
-        <th>Accion</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each transacciones}}
-      <tr>
-        <td>{{nombre}}</td>
-        <td>{{costo}}</td>
-        <td>{{metodo}}</td>
-        <td>{{categoria}}</td>
-        <td>{{descripcion}}</td>
-        <td>
-          <a href="/eliminar-transaccion/{{@key}}"><button class="button is-danger">Eliminar</button></a>
-          <button
-            onclick="openModalEdit('{{@key}}', '{{nombre}}', '{{costo}}', '{{metodo}}', '{{categoria}}', '{{descripcion}}');"
-            class="button is-primary">Editar</button>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  {{else}}
-  <p>No hay transacciones ¡Crea una!</p>
-  {{/if}}
+  lo usamos para obtener su identificacion para eliminar o editar}}
+  . Mirar la funcion donde se dibuja--}}
 </div>
 
 <div class="modal" id="modal-edit">
@@ -207,3 +176,114 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const idToken = await localStorage.getItem('idToken');
+    if (idToken) {
+      try {
+        const response = await fetch('/api/transacciones', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+        const data = await response.json();
+
+        const transaccionesDiv = document.getElementById('transacciones');
+
+        // Aquí construimos el HTML para la tabla
+        if (data && Object.keys(data).length > 0) {
+          let tableHTML = `
+            <table class="table is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Costo</th>
+                  <th>Método de Pago</th>
+                  <th>Categoría</th>
+                  <th>Descripción</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          for (const [key, transaccion] of Object.entries(data)) {
+            tableHTML += `
+              <tr>
+                <td>${transaccion.nombre}</td>
+                <td>${transaccion.costo}</td>
+                <td>${transaccion.metodo}</td>
+                <td>${transaccion.categoria}</td>
+                <td>${transaccion.descripcion}</td>
+                <td>
+                  <a href="/eliminar-transaccion/${key}"><button class="button is-danger">Eliminar</button></a>
+                  <button
+                    onclick="openModalEdit('${key}', '${transaccion.nombre}', '${transaccion.costo}', '${transaccion.metodo}', '${transaccion.categoria}', '${transaccion.descripcion}');"
+                    class="button is-primary">Editar</button>
+                </td>
+              </tr>
+            `;
+          }
+
+          tableHTML += `
+              </tbody>
+            </table>
+          `;
+
+          transaccionesDiv.innerHTML = tableHTML;
+        } else {
+          transaccionesDiv.innerHTML = '<p>No hay transacciones ¡Crea una!</p>';
+        }
+      } catch (error) {
+        console.error('Error al obtener las transacciones:', error);
+      }
+    } else {
+      console.error('No se encontró el token de ID');
+    }
+  });
+</script>
+
+
+<script>
+  document.getElementById('crear-transaccion-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.target;
+
+    const transaccion = {
+      nombre: form.nombre.value,
+      costo: form.costo.value,
+      metodo_pago: form.metodo_pago.value,
+      categoria: form.categoria.value,
+      descripcion: form.descripcion.value
+    };
+    console.log(transaccion);
+
+    const idToken = localStorage.getItem('idToken');
+
+    if (!idToken) {
+      console.error('No se encontró el token de ID');
+      return;
+    }
+
+    try {
+      const response = await fetch('/crear-transaccion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        },
+        body: JSON.stringify(transaccion)
+      });
+
+      if (response.ok) {
+        window.location.href = '/transacciones';
+      } else {
+        console.error('Error al crear la transacción:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al crear la transacción:', error);
+    }
+  });
+</script>

@@ -28,7 +28,10 @@ google_login.addEventListener('click', async () => {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         console.log(user);
+        const idToken = await user.getIdToken();
         localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('idToken', idToken);
+        window.location.href = '/transacciones';
     } catch (error) {
         console.error(error);
     }
