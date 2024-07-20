@@ -1,5 +1,6 @@
 <br>
 <br>
+{{!-- cuando le dan al boton se abre el modal para crear --}}
 <button onclick="openModal();" class="cssbuttons-io">
   <span>
     Crear Transacción
@@ -8,11 +9,12 @@
 <br>
 <br>
 
+{{!-- modal para crear --}}
 <div class="modal" id="modal">
   <div class="modal-background"></div>
   <div class="modal-content">
     <div class="section crear-trans">
-      <form method="POST" id="crear-transaccion-form">
+      <form id="crear-transaccion-form">
         <div class="columns is-multiline">
           <div class="column is-half">
             <div class="field">
@@ -75,7 +77,7 @@
 
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link" type="submit">Enviar</button>
+            <button class="button is-link">Enviar</button>
           </div>
           <div class="control">
             <button onclick="closeModal()" class="button is-light" type="button">Cancelar</button>
@@ -87,6 +89,7 @@
   {{!-- <button class="modal-close is-large" aria-label="close"></button> --}}
 </div>
 
+{{!-- Es un div donde ira la tabla e las transacciones mirar que dibujamos la tabal en transacciones.js --}}
 <div id="transacciones" class="transacciones">
   {{!-- Para pintar las transacciones hacemos ls siguiente:
   - en hbs el codigo js se escribe dentro de {{codigo}}, entoncesdecimos qe si hay transacciones (que la mandamos como
@@ -99,6 +102,8 @@
   . Mirar la funcion donde se dibuja--}}
 </div>
 
+{{!-- Modal para editar que se abrira cuando le demos al boton de esditar de la trasaccion en la tabla
+mirar en transacciones que cuando se dibuja la tabla esta el boton on click que abrira este modal--}}
 <div class="modal" id="modal-edit">
   <div class="modal-background"></div>
   <div class="modal-content">
@@ -177,113 +182,4 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const idToken = await localStorage.getItem('idToken');
-    if (idToken) {
-      try {
-        const response = await fetch('/api/transacciones', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${idToken}`
-          }
-        });
-        const data = await response.json();
-
-        const transaccionesDiv = document.getElementById('transacciones');
-
-        // Aquí construimos el HTML para la tabla
-        if (data && Object.keys(data).length > 0) {
-          let tableHTML = `
-            <table class="table is-fullwidth">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Costo</th>
-                  <th>Método de Pago</th>
-                  <th>Categoría</th>
-                  <th>Descripción</th>
-                  <th>Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-
-          for (const [key, transaccion] of Object.entries(data)) {
-            tableHTML += `
-              <tr>
-                <td>${transaccion.nombre}</td>
-                <td>${transaccion.costo}</td>
-                <td>${transaccion.metodo}</td>
-                <td>${transaccion.categoria}</td>
-                <td>${transaccion.descripcion}</td>
-                <td>
-                  <a href="/eliminar-transaccion/${key}"><button class="button is-danger">Eliminar</button></a>
-                  <button
-                    onclick="openModalEdit('${key}', '${transaccion.nombre}', '${transaccion.costo}', '${transaccion.metodo}', '${transaccion.categoria}', '${transaccion.descripcion}');"
-                    class="button is-primary">Editar</button>
-                </td>
-              </tr>
-            `;
-          }
-
-          tableHTML += `
-              </tbody>
-            </table>
-          `;
-
-          transaccionesDiv.innerHTML = tableHTML;
-        } else {
-          transaccionesDiv.innerHTML = '<p>No hay transacciones ¡Crea una!</p>';
-        }
-      } catch (error) {
-        console.error('Error al obtener las transacciones:', error);
-      }
-    } else {
-      console.error('No se encontró el token de ID');
-    }
-  });
-</script>
-
-
-<script>
-  document.getElementById('crear-transaccion-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = event.target;
-
-    const transaccion = {
-      nombre: form.nombre.value,
-      costo: form.costo.value,
-      metodo_pago: form.metodo_pago.value,
-      categoria: form.categoria.value,
-      descripcion: form.descripcion.value
-    };
-    console.log(transaccion);
-
-    const idToken = localStorage.getItem('idToken');
-
-    if (!idToken) {
-      console.error('No se encontró el token de ID');
-      return;
-    }
-
-    try {
-      const response = await fetch('/crear-transaccion', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`
-        },
-        body: JSON.stringify(transaccion)
-      });
-
-      if (response.ok) {
-        window.location.href = '/transacciones';
-      } else {
-        console.error('Error al crear la transacción:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error al crear la transacción:', error);
-    }
-  });
-</script>
+<script src="transacciones.js"></script>

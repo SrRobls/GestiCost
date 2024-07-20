@@ -42,8 +42,10 @@ router.get('/api/transacciones', async (req, res) => {
         // Obtener las transacciones del usuario autenticado
         const snapshot = await db.ref('transacciones').orderByChild('uid').equalTo(uid).once('value');
         const transacciones = snapshot.val();
-
+        console.log(transacciones);
         res.json(transacciones);
+
+        
     } catch (error) {
         console.error('Error al verificar el token:', error);
         res.status(401).json({ error: 'No autorizado' });
@@ -87,7 +89,7 @@ router.get('/2', (req, res) => {
 //     }
 // });
 
-router.post('/crear-transaccion', async (req, res) => {
+router.post('/api/crear-transaccion', async (req, res) => {
     const idToken = req.headers.authorization.split('Bearer ')[1];
     
     try {
@@ -105,6 +107,7 @@ router.post('/crear-transaccion', async (req, res) => {
             categoria: req.body.categoria,
             descripcion: req.body.descripcion
         };
+        // alert(transaccion);
 
         // Guardamos la transacción en la base de datos de Firebase
         await db.ref('transacciones').push(transaccion);
@@ -116,9 +119,62 @@ router.post('/crear-transaccion', async (req, res) => {
 });
 
 
-// Ruta para eliminar una transacción según su id      
-router.get('/eliminar-transaccion/:id', async (req, res) => {
+// Funcion para verificar el token de autenticación 
+async function verifyToken(req, res, next) {
+    const idToken = req.headers.authorization?.split(' ')[1];
+    if (!idToken) {
+        return res.status(401).send('Token de autenticación no proporcionado');
+    }
+
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        req.uid = decodedToken.uid;
+        next();
+    } catch (error) {
+        console.error('Error al verificar el token:', error);
+        res.status(401).send('Token de autenticación inválido');
+    }
+}
+
+// Ruta para editar una transacción según su id que miren que usa la función verifyToken para verificar el token de autenticación
+router.post('/api/editar-transaccion/:id', verifyToken, async (req, res) => {
     const transaccionId = req.params.id;
+    const updatedTransaccion = {
+        nombre: req.body.nombre,
+        costo: req.body.costo,
+        metodo: req.body.metodo_pago,
+        categoria: req.body.categoria,
+        descripcion: req.body.descripcion
+    };
+
+    try {
+        // Obtén la transacción actual
+        const snapshot = await db.ref('transacciones').child(transaccionId).once('value');
+        const transaccion = snapshot.val();
+
+        if (!transaccion) {
+            return res.status(404).send('Transacción no encontrada');
+        }
+
+        // Verifica que el uid de la transacción coincida con el uid del usuario autenticado
+        if (transaccion.uid !== req.uid) {
+            return res.status(403).send('No autorizado para editar esta transacción');
+        }
+
+        // Actualiza la transacción
+        await db.ref('transacciones').child(transaccionId).update(updatedTransaccion);
+        res.status(200).redirect('/transacciones');
+    } catch (error) {
+        console.error('Error al editar la transacción:', error);
+        res.status(500).send('Error al editar la transacción');
+    }
+});
+
+ 
+// Ruta para eliminar una transacción según su id y verificación de token
+router.post('/api/eliminar-transaccion/:id', verifyToken, async (req, res) => {
+    const transaccionId = req.params.id;
+    console.log(transaccionId);
     
     try {
         // Eliminar la transacción de la base de datos de Firebase
@@ -130,31 +186,11 @@ router.get('/eliminar-transaccion/:id', async (req, res) => {
     }
 });
 
-// Ruta para editar una transacción según su id
-router.post('/editar-transaccion/:id', async (req, res) => {
-    const transaccionId = req.params.id;
-    // Obtenemos los datos del formulario de edicion desde la vista de index.hbs
-    const updatedTransaccion = {
-        nombre: req.body.nombre,
-        costo: req.body.costo,
-        metodo: req.body.metodo_pago,
-        categoria: req.body.categoria,
-        descripcion: req.body.descripcion
-    };
-
-    try {
-        // Actualizar la transacción en la base de datos de Firebase
-        await db.ref('transacciones').child(transaccionId).update(updatedTransaccion);
-        res.status(200).redirect('/transacciones');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al editar la transacción');
-    }
-});
-
-
-
-
-
 module.exports = router;
+
+
+
+
+
+
 
