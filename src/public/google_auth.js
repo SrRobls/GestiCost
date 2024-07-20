@@ -29,11 +29,14 @@ google_login.addEventListener('click', async () => {
         const user = result.user;
         console.log(user);
         const idToken = await user.getIdToken();
-        localStorage.setItem('user', JSON.stringify(user));
+        // localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('name', user.displayName);
         localStorage.setItem('idToken', idToken);
         window.location.href = '/transacciones';
     } catch (error) {
         console.error(error);
     }
 });
+
+
 

@@ -1,6 +1,6 @@
 <div class="login">
     <div class="login">
-        <h1>¡Descubre GestiCost!</h1>
+        <h1 id="titulo" class="title is-1">¡Descubre GestiCost!</h1>
         <p>Con GestiCost, podrás llevar un control sencillo y rápido de tus gastos. Gestiona tus presupuestos, alcanza
             tus metas financieras y mucho más.</p>
         <p>¡Anímate a usar GestiCost y toma el control de tus finanzas!</p>
@@ -24,4 +24,27 @@
     </div>
 </div>
 
-<script type="module" src="google_auth.js"></script>
+<script>
+    // Check if there is a logged in user
+    const idToken = localStorage.getItem('idToken');
+    const nombre = localStorage.getItem('name');
+
+    if (!idToken && window.location.pathname === '/') {
+        // Hide sections and logout button
+        const secciones = document.getElementsByClassName('quitar');
+        for (let i = 0; i < secciones.length; i++) {
+            secciones[i].style.display = 'none';
+        }
+    } else {
+        // Hide Google login button
+        document.getElementById('google-login').style.display = 'none';
+
+        // Set welcome message
+        if (nombre) {
+            const primerNombre = nombre.split(' ')[0];
+            document.getElementById('titulo').innerHTML = `¡Bienvenido ${primerNombre}!`;
+        } else {
+            document.getElementById('titulo').innerHTML = '¡Bienvenido!';
+        }
+    }
+</script>

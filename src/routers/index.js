@@ -27,10 +27,13 @@ router.get('/', (req, res) => {
 //     });
 // });
 
+
+//para que se pueda ver la vista index.hbs se tiene que hacer una petición a la ruta /transacciones
 router.get('/transacciones', (req, res) => {
     res.render('index'); // Renderiza la vista index.hbs
 });
 
+// para obtener las transacciones de la base de datos de Firebase se crea una nueva ruta /api/transacciones
 router.get('/api/transacciones', async (req, res) => {
     const idToken = req.headers.authorization.split('Bearer ')[1];
 
@@ -119,7 +122,7 @@ router.post('/api/crear-transaccion', async (req, res) => {
 });
 
 
-// Funcion para verificar el token de autenticación 
+// Funcion para verificar el token de autenticación para las acciones de editar y eliminar transacciones
 async function verifyToken(req, res, next) {
     const idToken = req.headers.authorization?.split(' ')[1];
     if (!idToken) {
@@ -183,6 +186,21 @@ router.post('/api/eliminar-transaccion/:id', verifyToken, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al eliminar la transacción');
+    }
+});
+
+
+// Ruta para verificar la validez del token
+router.post('/api/checkTokenValidity', async (req, res) => {
+    const idToken = req.body.idToken;
+
+    try {
+        // Verificar el token de autenticación
+        await admin.auth().verifyIdToken(idToken);
+        res.json({ valid: true });
+    } catch (error) {
+        console.error('Error checking token validity:', error);
+        res.json({ valid: false });
     }
 });
 
