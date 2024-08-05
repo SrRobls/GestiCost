@@ -1,5 +1,83 @@
-<button onclick="" class="cssbuttons-io">
+<button onclick="openModalMeta();" class="cssbuttons-io">
   <span>
     Crear Meta
   </span>
 </button>
+
+
+<div class="modal" id="modal-meta">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="section crear-trans">
+      <form id="crear-transaccion-form">
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-trans">Nombre de Transacción</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-trans" name="nombre" />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="costo-trans">Costo</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Costo" id="costo-trans" name="costo" />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="metodo-pago">Método de Pago</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="metodo-pago" name="metodo_pago">
+                    <option value="credito">Crédito</option>
+                    <option value="debito">Débito</option>
+                    <option value="efectivo">Efectivo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="categoria-trans">Categoría</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="categoria-trans" name="categoria">
+                    <option value="comida">Comida</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="entretenimiento">Entretenimiento</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-full">
+            <div class="field">
+              <label class="label" for="descripcion-trans">Descripción</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans" name="descripcion"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" type="submit">Enviar</button>
+          </div>
+          <div class="control">
+            <button onclick="closeModalMeta()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
