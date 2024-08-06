@@ -204,6 +204,12 @@ router.post('/api/checkTokenValidity', async (req, res) => {
     }
 });
 
+
+
+router.get('/metas', (req, res) => {
+    res.render('metas');
+});
+
 module.exports = router;
 
 

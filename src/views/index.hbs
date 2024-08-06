@@ -1,6 +1,5 @@
-<br>
-<br>
-{{!-- cuando le dan al boton se abre el modal para crear --}}
+<!-- Tu código HTML -->
+
 <button onclick="openModal();" class="cssbuttons-io">
   <span>
     Crear Transacción
@@ -9,7 +8,6 @@
 <br>
 <br>
 
-{{!-- modal para crear --}}
 <div class="modal" id="modal">
   <div class="modal-background"></div>
   <div class="modal-content">
@@ -68,8 +66,7 @@
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
-                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans"
-                  name="descripcion"></textarea>
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans" name="descripcion"></textarea>
               </div>
             </div>
           </div>
@@ -77,7 +74,7 @@
 
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link">Enviar</button>
+            <button class="button is-link" type="submit">Enviar</button>
           </div>
           <div class="control">
             <button onclick="closeModal()" class="button is-light" type="button">Cancelar</button>
@@ -86,24 +83,10 @@
       </form>
     </div>
   </div>
-  {{!-- <button class="modal-close is-large" aria-label="close"></button> --}}
 </div>
 
-{{!-- Es un div donde ira la tabla e las transacciones mirar que dibujamos la tabal en transacciones.js --}}
-<div id="transacciones" class="transacciones">
-  {{!-- Para pintar las transacciones hacemos ls siguiente:
-  - en hbs el codigo js se escribe dentro de {{codigo}}, entoncesdecimos qe si hay transacciones (que la mandamos como
-  response en la peticion), entonces haga una tabla de estas
-  - luego por cada una de las transacciones que se obtiene se usa el each para que las pinte, notemos que como desde la
-  peticiones lo mandamos como datos del response podemos aceder
-  a las carecteriticas de cada una mediante {{caracteristica}}
-  - dato important mediante {{@key accedemos al id de la transaccion dentro de la base de datos de firebase. Noten que
-  lo usamos para obtener su identificacion para eliminar o editar}}
-  . Mirar la funcion donde se dibuja--}}
-</div>
+<div id="transacciones" class="transacciones"></div>
 
-{{!-- Modal para editar que se abrira cuando le demos al boton de esditar de la trasaccion en la tabla
-mirar en transacciones que cuando se dibuja la tabla esta el boton on click que abrira este modal--}}
 <div class="modal" id="modal-edit">
   <div class="modal-background"></div>
   <div class="modal-content">
@@ -162,8 +145,7 @@ mirar en transacciones que cuando se dibuja la tabla esta el boton on click que 
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
-                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit"
-                  name="descripcion"></textarea>
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit" name="descripcion"></textarea>
               </div>
             </div>
           </div>
@@ -182,6 +164,7 @@ mirar en transacciones que cuando se dibuja la tabla esta el boton on click que 
   </div>
 </div>
 
+
 <script>
 
   const idToken = localStorage.getItem('idToken');
@@ -193,4 +176,6 @@ mirar en transacciones que cuando se dibuja la tabla esta el boton on click que 
 
 
 
+
 </script>
+

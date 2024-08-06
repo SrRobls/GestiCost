@@ -1,5 +1,5 @@
 var admin = require("firebase-admin");
-var serviceAccount = require("../gesticost-48429-firebase-adminsdk-t36fu-d9f1cd0b2b.json");
+var serviceAccount = require("../gesticost-48429-firebase-adminsdk-t36fu-34a546543f");
 
 
 admin.initializeApp({
