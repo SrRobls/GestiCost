@@ -1,8 +1,15 @@
 // Validación de formularios
 function validarTransaccion(form) {
+  const nombreInput = form.nombre.value.trim();
   const costoInput = form.costo.value;
   const descripcionInput = form.descripcion.value;
   const longitudMaxima = 70; // Define la longitud máxima permitida para la descripción
+
+  // Validación del nombre
+  if (nombreInput === '') {
+      alert('El nombre es obligatorio.');
+      return false;
+  }
 
   // Validación del costo
   if (isNaN(costoInput) || costoInput.trim() === '' || parseFloat(costoInput) <= 0) {
