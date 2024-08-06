@@ -39,6 +39,7 @@ const checkTokenValidity = () => {
   })
     .then(response => response.json())
     .then(data => {
+      // Si el token no es válido, eliminamos el token y redirigimos al usuario a la página
       if (!data.valid) {
         localStorage.removeItem('idToken');
         localStorage.removeItem('name');
