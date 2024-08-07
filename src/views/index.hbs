@@ -1,13 +1,59 @@
-<!-- Tu código HTML -->
-
-<button onclick="openModal();" class="cssbuttons-io">
-  <span>
-    Crear Transacción
-  </span>
-</button>
-<br>
-<br>
-
+<div class="columns is-mobile">
+  <div class="column is-half-mobile">
+    <button onclick="openModal();" class="cssbuttons-io">
+      <span>
+        Crear Transacción
+      </span>
+    </button>
+  </div>
+  <div class="column is-half-mobile">
+    <div class="filters">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label" for="filter-categoria">Categoría</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <div class="select">
+                <select id="filter-categoria">
+                  <option value="">Todas</option>
+                  <option value="comida">Comida</option>
+                  <option value="transporte">Transporte</option>
+                  <option value="entretenimiento">Entretenimiento</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field-label is-normal">
+          <label class="label" for="filter-metodo">Método de Pago</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <div class="select">
+                <select id="filter-metodo">
+                  <option value="">Todos</option>
+                  <option value="credito">Crédito</option>
+                  <option value="debito">Débito</option>
+                  <option value="efectivo">Efectivo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <button class="button" id="apply-filters-btn">Aplicar Filtros</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal" id="modal">
   <div class="modal-background"></div>
   <div class="modal-content">
@@ -86,7 +132,6 @@
 </div>
 
 <div id="transacciones" class="transacciones"></div>
-
 <div class="modal" id="modal-edit">
   <div class="modal-background"></div>
   <div class="modal-content">
@@ -145,7 +190,8 @@
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
-                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit" name="descripcion"></textarea>
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit"
+                  name="descripcion"></textarea>
               </div>
             </div>
           </div>
@@ -164,18 +210,11 @@
   </div>
 </div>
 
-
 <script>
-
   const idToken = localStorage.getItem('idToken');
-  // TODO: Hacer alerta si no hay sesion
+  // TODO: Hacer alerta si no hay sesión
   if (!idToken) {
     alert('Debes iniciar sesión');
     window.location.href = '/';
   }
-
-
-
-
 </script>
-
