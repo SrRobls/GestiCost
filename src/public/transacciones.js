@@ -220,3 +220,72 @@ async function eliminar(id) {
       console.error('Error al eliminar la transacción:', error);
   }
 }
+
+async function generarReporte() {
+  const idToken = await localStorage.getItem('idToken');
+  if (idToken) {
+    try {
+      // Realizar solicitud GET para obtener transacciones
+      const response = await fetch('/api/transacciones', {
+        method: 'GET', // Asegúrate de que el método sea correcto (GET o POST)
+        headers: {
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+
+      const data = await response.json();
+      const reportContent = document.getElementById('reportContent');
+
+      if (data && Object.keys(data).length > 0) {
+        let totalCost = 0;
+        let paymentMethods = {};
+        let categories = {};
+
+        // Procesar las transacciones
+        for (const transaccion of Object.values(data)) {
+          totalCost += Number(transaccion.costo);
+          console.log(totalCost)
+          console.log(typeof totalCost);
+
+          if (paymentMethods[transaccion.metodo]) {
+            paymentMethods[transaccion.metodo]++;
+          } else {
+            paymentMethods[transaccion.metodo] = 1;
+          }
+
+          if (categories[transaccion.categoria]) {
+            categories[transaccion.categoria]++;
+          } else {
+            categories[transaccion.categoria] = 1;
+          }
+        }
+
+        // Calcular promedio de costos
+        var averageCost = totalCost / Object.keys(data).length;
+
+        // Encontrar el método de pago más usado
+        var mostUsedPaymentMethod = Object.keys(paymentMethods).reduce((a, b) => paymentMethods[a] > paymentMethods[b] ? a : b);
+        // Encontrar la categoría más usada
+        var mostUsedCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b);
+
+        // Generar HTML para mostrar en el modal
+        const reportHTML = `
+          <p><strong>Sumatoria total de Costos:</strong> ${totalCost.toFixed(2)}</p>
+          <p><strong>Promedio de Costos:</strong> ${averageCost.toFixed(2)}</p>
+          <p><strong>Método de pago más usado:</strong> ${mostUsedPaymentMethod} (${paymentMethods[mostUsedPaymentMethod]} veces)</p>
+          <p><strong>Categoría más usada:</strong> ${mostUsedCategory} (${categories[mostUsedCategory]} veces)</p>
+        `;
+
+        // Insertar el HTML en el contenido del modal
+        reportContent.innerHTML = reportHTML;
+      } else {
+        reportContent.innerHTML = '<p>No hay transacciones ¡Crea una!</p>';
+        console.log('No hay transacciones ¡Crea una!');
+      }
+    } catch (error) {
+      console.error('Error al obtener las transacciones:', error);
+    }
+  } else {
+    console.error('No se encontró el token de ID');
+  }
+}
