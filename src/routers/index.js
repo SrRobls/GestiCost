@@ -285,7 +285,7 @@ router.post("/api/editar-meta/:id", verifyToken, async (req, res) => {
       return res.status(403).send("No autorizado para editar esta transacción");
     }
 
-    const nuevoMonto = (meta.monto || 0)  + req.body.abono;
+    const nuevoMonto = parseFloat(meta.monto || 0) + parseFloat(req.body.abono);
 
     // Actualiza la transacción
     await db
@@ -299,4 +299,18 @@ router.post("/api/editar-meta/:id", verifyToken, async (req, res) => {
   }
 });
 
+
+router.post("/api/eliminar-meta/:id", verifyToken, async (req, res) => {
+  const metaId = req.params.id;
+  console.log(metaId);
+
+  try {
+    // Eliminar la transacción de la base de datos de Firebase
+    await db.ref("metas").child(metaId).remove();
+    res.status(200).redirect("/metas");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al eliminar la transacción");
+  }
+});
 module.exports = router;
