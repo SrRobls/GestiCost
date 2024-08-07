@@ -1,18 +1,12 @@
 <!-- Tu código HTML -->
 
-<div class="button-container">
-  <button onclick="openModal();" class="cssbuttons-io">
-    <span>
-      Crear Transacción
-    </span>
-  </button>
-  <button onclick="openModalReport()" class="cssbuttons-io">
-    <span>
-      Mostrar Informe
-    </span>
-  </button>
-</div>
-
+<button onclick="openModal();" class="cssbuttons-io">
+  <span>
+    Crear Transacción
+  </span>
+</button>
+<br>
+<br>
 
 <div class="modal" id="modal">
   <div class="modal-background"></div>
@@ -170,20 +164,6 @@
   </div>
 </div>
 
-<div id="reportModal" class="modal">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title">Informe</p>
-      <button class="delete" aria-label="close" onclick="closeModalReport()"></button>
-    </header>
-    <section class="modal-card-body" id="reportContent">
-    </section>
-    <footer class="modal-card-foot">
-      <button class="button is-success" onclick="closeModalReport()">Cerrar</button>
-    </footer>
-  </div>
-</div>
 
 <script>
 
