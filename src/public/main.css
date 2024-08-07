@@ -177,4 +177,18 @@ button svg {
     margin-right: 40rem;
     width: 300px;
 }
+.filters .field.is-grouped .control {
+    margin-right: 1rem;
+}
+  
+.filters .select, 
+.filters .button {
+  width: auto;
+}
+  
+.filters .label {
+  margin-bottom: 0.5rem;
+}
+  
 
+  

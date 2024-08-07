@@ -390,6 +390,14 @@ function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
   };
 }
 
+
+// Agregar evento al botón de quitar filtro
+document.getElementById('quitar-filtro-btn').onclick = () => {
+  document.getElementById('filter-categoria').value = '';
+  document.getElementById('filter-metodo').value = '';
+  aplicarFiltro();
+};
+
 // Cargar las transacciones al cargar la página
 document.addEventListener('DOMContentLoaded', cargarTransacciones);
 
