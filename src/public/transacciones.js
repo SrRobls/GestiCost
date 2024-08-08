@@ -223,70 +223,78 @@ async function eliminar(id) {
   }
 }
 
+
+async function generarReporte() {
+    const idToken = await localStorage.getItem('idToken');
+    if (idToken) {
+      try {
+        // Realizar solicitud GET para obtener transacciones
+        const response = await fetch('/api/transacciones', {
+          method: 'GET', // Asegúrate de que el método sea correcto (GET o POST)
+          headers: {
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+  
+        const data = await response.json();
+        const reportContent = document.getElementById('reportContent');
+  
+        if (data && Object.keys(data).length > 0) {
+          let totalCost = 0;
+          let paymentMethods = {};
+          let categories = {};
+  
+          // Procesar las transacciones
+          for (const transaccion of Object.values(data)) {
+            totalCost += Number(transaccion.costo);
+            console.log(totalCost)
+            console.log(typeof totalCost);
+  
+            if (paymentMethods[transaccion.metodo]) {
+              paymentMethods[transaccion.metodo]++;
+            } else {
+              paymentMethods[transaccion.metodo] = 1;
+            }
+  
+            if (categories[transaccion.categoria]) {
+              categories[transaccion.categoria]++;
+            } else {
+              categories[transaccion.categoria] = 1;
+            }
+          }
+  
+          // Calcular promedio de costos
+          var averageCost = totalCost / Object.keys(data).length;
+  
+          // Encontrar el método de pago más usado
+          var mostUsedPaymentMethod = Object.keys(paymentMethods).reduce((a, b) => paymentMethods[a] > paymentMethods[b] ? a : b);
+          // Encontrar la categoría más usada
+          var mostUsedCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b);
+  
+          // Generar HTML para mostrar en el modal
+          const reportHTML = `
+            <p><strong>Sumatoria total de Costos:</strong> ${totalCost.toFixed(2)}</p>
+            <p><strong>Promedio de Costos:</strong> ${averageCost.toFixed(2)}</p>
+            <p><strong>Método de pago más usado:</strong> ${mostUsedPaymentMethod} (${paymentMethods[mostUsedPaymentMethod]} veces)</p>
+            <p><strong>Categoría más usada:</strong> ${mostUsedCategory} (${categories[mostUsedCategory]} veces)</p>
+          `;
+  
+          // Insertar el HTML en el contenido del modal
+          reportContent.innerHTML = reportHTML;
+        } else {
+          reportContent.innerHTML = '<p>No hay transacciones ¡Crea una!</p>';
+          console.log('No hay transacciones ¡Crea una!');
+        }
+      } catch (error) {
+        console.error('Error al obtener las transacciones:', error);
+      }
+    } else {
+      console.error('No se encontró el token de ID');
+    }
+  }
 let transacciones = []; // Almacena todas las transacciones
 let transaccionesFiltradas = []; // Almacena las transacciones visibles después de aplicar el filtro
 
-// Función para obtener todas las transacciones y mostrarlas
-async function cargarTransacciones() {
-  const idToken = await localStorage.getItem('idToken');
-
-  if (idToken) {
-    try {
-      const response = await fetch('/api/transacciones', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${idToken}`
-        }
-      });
-
-      const data = await response.json();
-      console.log('Datos recibidos:', data);
-      transacciones = Object.entries(data).map(([key, transaccion]) => ({ id: key, ...transaccion }));
-      aplicarFiltro(); // Muestra las transacciones con el filtro actual
-    } catch (error) {
-      console.error('Error al obtener las transacciones:', error);
-    }
-  } else {
-    console.error('No se encontró el token de ID');
-  }
-}
-
-// Función para mostrar transacciones en la tabla
-function mostrarTransacciones() {
-  const transaccionesHTML = transaccionesFiltradas.map(transaccion => {
-    return `
-      <tr>
-        <td>${transaccion.nombre}</td>
-        <td>${transaccion.costo}</td>
-        <td>${transaccion.metodo}</td>
-        <td>${transaccion.categoria}</td>
-        <td>${transaccion.descripcion}</td>
-        <td>
-          <button onClick="eliminar('${transaccion.id}')" class="button is-danger">Eliminar</button>
-          <button onClick="openModalEdit('${transaccion.id}', '${transaccion.nombre}', '${transaccion.costo}', '${transaccion.metodo}', '${transaccion.categoria}', '${transaccion.descripcion}');" class="button is-primary">Editar</button>
-        </td>
-      </tr>
-    `;
-  }).join('');
-
-  document.getElementById('transacciones').innerHTML = `
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Costo</th>
-          <th>Método de Pago</th>
-          <th>Categoría</th>
-          <th>Descripción</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${transaccionesHTML}
-      </tbody>
-    </table>
-  `;
-}
 
 // Función para aplicar filtros
 function aplicarFiltro() {
@@ -333,64 +341,6 @@ async function eliminar(id) {
   }
 }
 
-// Función para abrir el modal de edición
-function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
-  const modal = document.getElementById('modal-edit');
-  document.getElementById('nombre-trans-edit').value = nombre;
-  document.getElementById('costo-trans-edit').value = costo;
-  document.getElementById('metodo-pago-edit').value = metodo;
-  document.getElementById('categoria-trans-edit').value = categoria;
-  document.getElementById('descripcion-trans-edit').value = descripcion;
-  modal.classList.add('is-active');
-
-  const form = document.getElementById('form-edit');
-  form.onsubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validarTransaccion(form)) {
-      return;
-    }
-
-    const idToken = await localStorage.getItem('idToken');
-    if (!idToken) {
-      console.error('No se encontró el token de ID');
-      return;
-    }
-
-    const data = {
-      nombre: document.getElementById('nombre-trans-edit').value,
-      costo: document.getElementById('costo-trans-edit').value,
-      metodo_pago: document.getElementById('metodo-pago-edit').value,
-      categoria: document.getElementById('categoria-trans-edit').value,
-      descripcion: document.getElementById('descripcion-trans-edit').value
-    };
-
-    try {
-      const response = await fetch('/api/editar-transaccion/' + id, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${idToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-
-      if (response.ok) {
-        // Actualizar la lista de transacciones y mostrar los cambios
-        transacciones = transacciones.map(transaccion => 
-          transaccion.id === id ? { ...transaccion, ...data } : transaccion
-        );
-        aplicarFiltro();
-      } else {
-        console.error('Error al editar la transacción');
-      }
-    } catch (error) {
-      console.error('Error al editar la transacción:', error);
-    }
-  };
-}
-
-
 // Agregar evento al botón de quitar filtro
 document.getElementById('quitar-filtro-btn').onclick = () => {
   document.getElementById('filter-categoria').value = '';
@@ -404,4 +354,5 @@ document.addEventListener('DOMContentLoaded', cargarTransacciones);
 
 console.log(transacciones);
 console.log(typeof transacciones);
+
 

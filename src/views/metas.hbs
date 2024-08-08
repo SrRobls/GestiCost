@@ -9,27 +9,36 @@
   <div class="modal-background"></div>
   <div class="modal-content">
     <div class="section crear-trans">
-      <form id="crear-transaccion-form">
+      <form id="crear-meta-form">
         <div class="columns is-multiline">
           <div class="column is-half">
             <div class="field">
-              <label class="label" for="nombre-trans">Nombre de Transacción</label>
+              <label class="label" for="nombre-trans">Nombre de la Meta</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Nombre" id="nombre-trans" name="nombre" />
+                <input class="input" type="text" placeholder="Nombre" id="nombre-meta" name="nombre_meta" />
               </div>
             </div>
           </div>
 
           <div class="column is-half">
             <div class="field">
-              <label class="label" for="costo-trans">Costo</label>
+              <label class="label" for="costo-trans">Objetivo a ahorrar</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Costo" id="costo-trans" name="costo" />
+                <input class="input" type="text" placeholder="Objetivo" id="total-meta" name="total_meta" />
               </div>
             </div>
           </div>
 
-          <div class="column is-half">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="costo-trans">Monto Inical</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Monto" id="monto-meta" name="monto_meta" value="0" />
+              </div>
+            </div>
+          </div>
+
+          {{!-- <div class="column is-half">
             <div class="field">
               <label class="label" for="metodo-pago">Método de Pago</label>
               <div class="control">
@@ -42,9 +51,9 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> --}}
 
-          <div class="column is-half">
+          {{!-- <div class="column is-half">
             <div class="field">
               <label class="label" for="categoria-trans">Categoría</label>
               <div class="control">
@@ -57,24 +66,83 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> --}}
 
-          <div class="column is-full">
+          {{!-- <div class="column is-full">
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
                 <textarea class="textarea" placeholder="Descripción" id="descripcion-trans" name="descripcion"></textarea>
               </div>
             </div>
-          </div>
+          </div> --}}
         </div>
 
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-link" type="submit">Enviar</button>
+            <button class="button is-link" type="submit">Crear Meta</button>
           </div>
           <div class="control">
             <button onclick="closeModalMeta()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{{!-- Aca iran las metas --}}
+<div id="metas" class="metas"></div>
+
+{{!-- Modal para editar meta --}}
+<div class="modal" id="modal-meta-edit">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="section crear-trans">
+      <form id="form-edit-meta" method="POST">
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-trans">Nombre</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-meta-edit" name="nombre" readonly/>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="costo-trans">Objetivo a ahorrar</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Objetivo" id="objetivo-meta-edit" name="costo" readonly/>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-full">
+            <div class="field">
+              <label class="label" for="costo-trans">Monto Actual</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Monto" id="monto-meta-edit" name="monto_meta" readonly/>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-full">
+            <div class="field">
+              <label class="label" for="costo-trans">Monto a abonar</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Monto" id="abono-meta-edit" name="abono"/>
+              </div>
+            </div>
+          </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" type="submit">Agregar Monto</button>
+          </div>
+          <div class="control">
+            <button onclick="closeModalMetaEdit()" class="button is-light" type="button">Cancelar</button>
           </div>
         </div>
       </form>

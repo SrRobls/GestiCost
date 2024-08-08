@@ -1,12 +1,37 @@
-<div class="columns is-mobile">
-  <div class="column is-half-mobile">
-    <button onclick="openModal();" class="cssbuttons-io">
-      <span>
-        Crear Transacción
-      </span>
-    </button>
+
+<!-- Tu código HTML -->
+
+<div class="button-container">
+  <button onclick="openModal();" class="cssbuttons-io">
+    <span>
+      Crear Transacción
+    </span>
+  </button>
+  <button onclick="openModalReport()" class="cssbuttons-io">
+    <span>
+      Mostrar Informe
+    </span>
+  </button>
+</div>
+<br>
+<br>
+
+<div id="reportModal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Informe</p>
+      <button class="delete" aria-label="close" onclick="closeModalReport()"></button>
+    </header>
+    <section class="modal-card-body" id="reportContent">
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" onclick="closeModalReport()">Cerrar</button>
+    </footer>
   </div>
-  <div class="column is-half-mobile">
+</div>
+
+<div class="column is-half-mobile">
     <div class="filters">
       <div class="field is-horizontal">
         <div class="field-label is-normal">
@@ -60,7 +85,8 @@
       </div>
     </div>
   </div>
-</div>
+
+
 <div class="modal" id="modal">
   <div class="modal-background"></div>
   <div class="modal-content">
@@ -119,7 +145,8 @@
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
-                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans" name="descripcion"></textarea>
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans"
+                  name="descripcion"></textarea>
               </div>
             </div>
           </div>
@@ -224,4 +251,5 @@
     alert('Debes iniciar sesión');
     window.location.href = '/';
   }
+
 </script>

@@ -2,7 +2,14 @@
     padding: 0px 48px !important;
 }
 
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+
 .cssbuttons-io {
+    margin: 10px;
     position: relative;
     font-family: inherit;
     font-weight: 500;
@@ -14,6 +21,10 @@
     background: linear-gradient(to right, #8e2de2, #4a00e0);
     color: ghostwhite;
     overflow: hidden;
+}
+
+.cssbuttons-io:first-child {
+    margin-left: 0;
 }
 
 .cssbuttons-io svg {
