@@ -152,14 +152,35 @@ document.getElementById('crear-transaccion-form').addEventListener('submit', asy
   }
 });
 
+// inserta las categorias en el select 
+function cargarCategoriasSelect(data, categoriaSelect) {
+  let options = ''
+  for (const [, categoria] of Object.entries(data)) {
+    options += `
+    <option value="${categoria.nombre}">${categoria.nombre}</option>
+    `
+  }
+
+  // insertar options al select
+  categoriaSelect.innerHTML = options;
+
+}
+
 // Petición para editar una transacción
-function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
+async function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
   const modal = document.getElementById('modal-edit');
   document.getElementById('nombre-trans-edit').value = nombre;
   document.getElementById('costo-trans-edit').value = costo;
   document.getElementById('metodo-pago-edit').value = metodo;
-  document.getElementById('categoria-trans-edit').value = categoria;
-  document.getElementById('descripcion-trans-edit').value = descripcion;
+  document.getElementById("descripcion-trans-edit").value = descripcion;
+  const categoriaSelect = document.getElementById('categoria-trans-edit')
+  const data = await obtenerCategorias();
+  if(data){
+    cargarCategoriasSelect(data, categoriaSelect);
+  }
+  console.log(categoria)
+  categoriaSelect.value = categoria;
+
   modal.classList.add('is-active');
 
   const form = document.getElementById('form-edit');
