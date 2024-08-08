@@ -179,3 +179,28 @@ button svg {
     height: 90vh;
     width: 100%;
 }
+
+
+#container-options {
+  max-height: 150px; /* Ajusta la altura máxima según sea necesario */
+  overflow-y: auto; /* Permite el scroll vertical */
+  background-color: #333; /* Fondo oscuro para el contenedor */
+  color: #fff; /* Color de texto blanco para el contenedor */
+  border-radius: 4px; /* Bordes redondeados opcionales */
+  padding: 0; /* Elimina el padding interno si es necesario */
+}
+
+
+/* Estilo para el scrollbar */
+#container-options::-webkit-scrollbar {
+  width: 8px; /* Ancho del scrollbar */
+}
+
+#container-options::-webkit-scrollbar-thumb {
+  background-color: #555; /* Color del thumb del scrollbar */
+  border-radius: 4px; /* Bordes redondeados del thumb */
+}
+
+#container-options::-webkit-scrollbar-track {
+  background-color: #333; /* Color de la pista del scrollbar */
+}
