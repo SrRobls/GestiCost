@@ -58,8 +58,8 @@
               <label for="dropdown-trigger" class="label">Categoría:</label>
               <div class="dropdown control" style="width: 100% !important">
                 <div class="dropdown-trigger" style="width: 100% !important">
-                  <button class="button is-fullwidth " aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span id="dropdown-text" style="width: 90%; overflow: hidden;"></span>
+                  <button id="dropdown-button" type="button"  class="button is-fullwidth " aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span id="dropdown-text" class="has-text-left" style="width: 90%; overflow: hidden;"></span>
                     <span class="icon is-small">
                         <i id="dropdown-icon" class="fa fa-angle-right"></i>
                     </span>
@@ -72,10 +72,9 @@
                     </div>
                     <hr class="dropdown-divider" />
                     
-                    <button class="button is-ghost" aria-haspopup="true" aria-controls="dropdown-menu" onclick="toggleModalCrearCategoria();">      
+                    <button type="button" class="button is-ghost" onclick="toggleModalCrearCategoria();">      
                       <span>Agregar Categoria</span>
-                    </span>
-                  </button>
+                    </button>
                   </div>
                 </div>
               </div>
