@@ -32,6 +32,9 @@ router.get('/', (req, res) => {
 router.get('/transacciones', (req, res) => {
     res.render('index'); // Renderiza la vista index.hbs
 });
+router.get('/categorias', (req, res) => {
+    res.render('categorias'); // Renderiza la vista categorias.hbs
+});
 
 // para obtener las transacciones de la base de datos de Firebase se crea una nueva ruta /api/transacciones
 router.get('/api/transacciones', async (req, res) => {
@@ -208,6 +211,103 @@ router.post('/api/checkTokenValidity', async (req, res) => {
 
 router.get('/metas', (req, res) => {
     res.render('metas');
+});
+
+
+//Categorias
+
+
+// para obtener las categorias de la base de datos de Firebase
+router.get('/api/categorias', async (req, res) => {
+  const idToken = req.headers.authorization.split('Bearer ')[1];
+
+  try {
+      // Verificar el token de autenticación
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const uid = decodedToken.uid;
+
+      // Obtener las categorias del usuario autenticado
+      const snapshot = await db.ref('categorias').orderByChild('uid').equalTo(uid).once('value');
+      const categorias = snapshot.val();
+      console.log(categorias);
+      res.json(categorias);
+
+      
+  } catch (error) {
+      console.error('Error al verificar el token:', error);
+      res.status(401).json({ error: 'No autorizado' });
+  }
+});
+
+
+// Para crear una nueva categoria
+router.post('/api/crear-categoria', async (req, res) =>{
+    const idToken = req.headers.authorization.split('Bearer ')[1];
+    
+    try {
+        // Verificar el token de autenticación
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+        
+        // Obtenemos los datos del formulario desde la vista de index.hbs
+        console.log(req.body);
+        const categoria = {
+            uid: uid,  // Incluir el UID del usuario en la transacción
+            nombre: req.body.nombre,
+        };
+
+        // Guardamos la categoria en la base de datos de categorias
+        await db.ref('categorias').push(categoria);
+        res.status(200).redirect('/categorias');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al guardar la categoria');
+    }
+});
+
+// Ruta para editar una categoria según su id 
+router.post('/api/editar-categoria/:id', verifyToken, async (req, res) => {
+  const categoriaId = req.params.id;
+  const updatedCategoria = {
+      nombre: req.body.nombre
+  };
+
+  try {
+      // Obtén la categoria actual
+      const snapshot = await db.ref('categorias').child(categoriaId).once('value');
+      const categoria = snapshot.val();
+
+      if (!categoria) {
+          return res.status(404).send('Categoria no encontrada');
+      }
+
+      // Verifica que el uid de la categoria coincida con el uid del usuario autenticado
+      if (categoria.uid !== req.uid) {
+          return res.status(403).send('No autorizado para editar esta categoria');
+      }
+
+      // Actualiza la categoria
+      await db.ref('categorias').child(categoriaId).update(updatedCategoria);
+      res.status(200).redirect('/categorias');
+  } catch (error) {
+      console.error('Error al editar la categoria:', error);
+      res.status(500).send('Error al editar la categoria');
+  }
+});
+
+// Ruta para eliminar una categoria según su id y verificación de token
+router.post('/api/eliminar-categoria/:id', verifyToken, async (req, res) => {
+  const categoriaId = req.params.id;
+  console.log(categoriaId);
+  
+  try {
+      // Eliminar la categoria de la base de datos de Firebase
+      await db.ref('categorias').child(categoriaId).remove();
+      res.status(200).redirect('/categorias');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Error al eliminar la categorias');
+  }
 });
 
 module.exports = router;
