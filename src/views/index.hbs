@@ -198,6 +198,66 @@
   </div>
 </div>
 
+<div class="modal" id="modal-crear-categoria">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="section">
+      <form id="crear-categoria-form">
+        <div class="columns is-justify-content-center">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-categoria">Nombre de Categoria</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-categoria" name="nombre" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped is-justify-content-center">
+          <div class="control">
+            <button class="button is-link" type="submit">Enviar</button>
+          </div>
+          <div class="control">
+            <button onclick="toggleModalCrearCategoria()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="modal-edit-categoria">
+  <div class="modal-background"></div>
+  <div class="modal-content" style="overflow-x: hidden;">
+    <div class="section px-2">
+      <form id="form-edit-categoria" method="POST">
+        <div class="columns is-justify-content-center">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-categoria">Nombre de Categoria</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-categoria-edit" name="nombre" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped is-justify-content-center">
+          <div class="control">
+            <button class="button is-link" type="submit">Editar</button>
+          </div>
+          <div class="control">
+            <button onclick="closeModalEditCategoria()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 <script>
 
   const idToken = localStorage.getItem('idToken');
