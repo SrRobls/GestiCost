@@ -14,6 +14,7 @@ function selectOption(event) {
   // Actualiza el contenido del botón con el texto de la opción seleccionada
   const selectedText = selectedItem.textContent.trim();
   document.getElementById('dropdown-text').textContent = selectedText;
+  document.getElementById('categoria-seleccionada').value = selectedText;
 
   // Obtén el valor de la opción seleccionada
   const selectedValue = selectedItem.getAttribute('data-value');
@@ -33,13 +34,61 @@ function selectOption(event) {
   lasSelectedItem = selectedItem
 }
 
+// inserta las categorias al dropdown
+function cargarCategoriasDropdown(data) {
+  const dropdownDivOptions = document.getElementById('container-options');
+  let optionsDropdown = ''
+  for (const [key, categoria] of Object.entries(data)) {
+    optionsDropdown += `
+    <div style="display: flex;">
+
+      <a href="#" class="dropdown-item" style="width: 90%; display: flex;" data-value="${categoria.nombre}" onclick="selectOption(event)"> 
+        ${categoria.nombre} 
+      </a>
+      <a class="dropdown-item" style="width: 5%; display: flex;" onclick="openModalEditCategoria('${key}', '${categoria.nombre}');">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </a>
+    </div>
+    `
+  }
+
+  // insertar options al dropdown
+  dropdownDivOptions.innerHTML = optionsDropdown;
+}
+
+async function obtenerCategorias() {
+  const idToken = localStorage.getItem('idToken');
+  try {
+    const response = await fetch('/api/categorias', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${idToken}`
+        }
+    });
+    // Verifica que la respuesta sea exitosa
+    if (!response.ok) {
+      // Maneja errores de estado HTTP no exitosos
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+    if(data == null){
+      console.log('No se encontraron Categorias')
+      return false;
+    } else {
+      return data;
+    }
+  } catch (error) {
+    console.error(`Ocurrió un error al obtener las categorias: ${error}`)
+    return false;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Obtén el elemento del dropdown
   const dropdown = document.querySelector('.dropdown');
   const trigger = dropdown.querySelector('.dropdown-trigger');
   const icon = document.getElementById('dropdown-icon');
-  const dropdownButton = document.getElementById('dropdown-button');
-  const dropdownDivOptions = document.getElementById('container-options');
+  const dropdownButton = document.getElementById('.dropdown-button');
 
   // Maneja el clic en el botón
   trigger.addEventListener('click', () => {
@@ -64,43 +113,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  const idToken = localStorage.getItem('idToken');
-  try {
-    const response = await fetch('/api/categorias', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${idToken}`
-        }
-    });
-    // Verifica que la respuesta sea exitosa
-    if (!response.ok) {
-      // Maneja errores de estado HTTP no exitosos
-      throw new Error(`${response.status} ${response.statusText}`);
-    }
-    const data = await response.json();
-    if(data == null){
-      console.log('No se encontraron Categorias')
-    } else {
-      let optionsDropdown = ''
-      for (const [key, categoria] of Object.entries(data)) {
-        optionsDropdown += `
-        <div style="display: flex;">
-
-          <a href="#" class="dropdown-item" style="width: 90%; display: flex;" data-value="${categoria.nombre}" onclick="selectOption(event)"> 
-            ${categoria.nombre} 
-          </a>
-          <a class="dropdown-item" style="width: 5%; display: flex;" onclick="openModalEditCategoria('${key}', '${categoria.nombre}');">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </a>
-        </div>
-        `
-      }
-
-      // insertar options al dropdown
-      dropdownDivOptions.innerHTML = optionsDropdown;
-    }
-  } catch (error) {
-    console.error(`Ocurrió un error al obtener las categorias: ${error}`)
+  const data = await obtenerCategorias();
+  if(data) {
+    cargarCategoriasDropdown(data);
   }
 });
 
@@ -151,7 +166,10 @@ document.getElementById('crear-categoria-form').addEventListener('submit', async
 
       // Verifica que la respuesta sea exitosa
       if (response.ok) {
-        window.location.href = '/transacciones';
+        const data = await obtenerCategorias();
+        if(data) {
+          cargarCategoriasDropdown(data);
+        }
       } else {
         // Leer el mensaje de error en caso de estado HTTP no exitoso
         const errorMessage = await response.text();  // Usa response.json() si el servidor devuelve JSON
@@ -180,7 +198,10 @@ async function eliminarCategoria(id) {
       });
 
       if (response.ok) {
-          window.location.href = '/transacciones';
+        const data = await obtenerCategorias();
+        if(data) {
+          cargarCategoriasDropdown(data);
+        }
       } else {
           // Maneja errores de estado HTTP no exitosos
           throw new Error(`${response.status} ${response.statusText}`);
@@ -234,8 +255,11 @@ function openModalEditCategoria(id, nombre) {
           });
 
           if (response.ok) {
-            console.log('editada')
-              window.location.href = '/transacciones';
+            const data = await obtenerCategorias();
+            if(data) {
+              cargarCategoriasDropdown(data);
+            }
+            closeModalEditCategoria();
           } else {
             // Maneja errores de estado HTTP no exitosos
             throw new Error(`${response.status} ${response.statusText}`);
