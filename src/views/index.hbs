@@ -55,14 +55,28 @@
 
           <div class="column is-half">
             <div class="field">
-              <label class="label" for="categoria-trans">Categoría</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select id="categoria-trans" name="categoria">
-                    <option value="comida">Comida</option>
-                    <option value="transporte">Transporte</option>
-                    <option value="entretenimiento">Entretenimiento</option>
-                  </select>
+              <label for="dropdown-trigger" class="label">Categoría:</label>
+              <div class="dropdown control" style="width: 100% !important">
+                <div class="dropdown-trigger" style="width: 100% !important">
+                  <button class="button is-fullwidth " aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span id="dropdown-text" style="width: 90%; overflow: hidden;"></span>
+                    <span class="icon is-small">
+                        <i id="dropdown-icon" class="fa fa-angle-right"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div  class="dropdown-content">
+                    <div id="container-options">
+
+                    </div>
+                    <hr class="dropdown-divider" />
+                    
+                    <button class="button is-ghost" aria-haspopup="true" aria-controls="dropdown-menu" onclick="toggleModalCrearCategoria();">      
+                      <span>Agregar Categoria</span>
+                    </span>
+                  </button>
+                  </div>
                 </div>
               </div>
             </div>
