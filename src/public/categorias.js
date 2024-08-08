@@ -170,6 +170,8 @@ document.getElementById('crear-categoria-form').addEventListener('submit', async
         if(data) {
           cargarCategoriasDropdown(data);
         }
+        toggleModalCrearCategoria();
+        window.location.href = "/transacciones";
       } else {
         // Leer el mensaje de error en caso de estado HTTP no exitoso
         const errorMessage = await response.text();  // Usa response.json() si el servidor devuelve JSON
@@ -260,6 +262,7 @@ function openModalEditCategoria(id, nombre) {
               cargarCategoriasDropdown(data);
             }
             closeModalEditCategoria();
+            window.location.href = "/transacciones";
           } else {
             // Maneja errores de estado HTTP no exitosos
             throw new Error(`${response.status} ${response.statusText}`);
@@ -274,6 +277,7 @@ function openModalEditCategoria(id, nombre) {
 
 // y aca con esta función cerramos el modal para editar una categoria
 function closeModalEditCategoria() {
+  console.log('aaaaaaaa')
   const modal = document.getElementById('modal-edit-categoria');
   modal.classList.remove('is-active');
 }
