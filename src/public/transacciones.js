@@ -101,6 +101,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error al obtener las transacciones:", error);
     }
+
+    const categorias = await obtenerCategorias();
+    if(categorias){
+      cargarCategoriasSelectFiltro(categorias);
+    }
   } else {
     console.error("No se encontró el token de ID");
   }
@@ -154,7 +159,22 @@ document.getElementById('crear-transaccion-form').addEventListener('submit', asy
 });
 
 // inserta las categorias en el select 
-function cargarCategoriasSelect(data, categoriaSelect) {
+function cargarCategoriasSelectFiltro(data) {
+  const categoriaSelect = document.getElementById('filter-categoria')
+  let options = '<option value="">Todas</option>'
+  for (const [, categoria] of Object.entries(data)) {
+    options += `
+    <option value="${categoria.nombre}">${categoria.nombre}</option>
+    `
+  }
+
+  // insertar options al select
+  categoriaSelect.innerHTML = options;
+
+}
+// inserta las categorias en el select 
+function cargarCategoriasSelect(data) {
+  const categoriaSelect = document.getElementById('categoria-trans-edit')
   let options = ''
   for (const [, categoria] of Object.entries(data)) {
     options += `
@@ -177,9 +197,8 @@ async function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) 
   const categoriaSelect = document.getElementById('categoria-trans-edit')
   const data = await obtenerCategorias();
   if(data){
-    cargarCategoriasSelect(data, categoriaSelect);
+    cargarCategoriasSelect(data);
   }
-  console.log(categoria)
   categoriaSelect.value = categoria;
 
   modal.classList.add('is-active');
