@@ -104,6 +104,8 @@ document.getElementById('crear-transaccion-form').addEventListener('submit', asy
   event.preventDefault();
   const form = event.target;
 
+  console.log(form)
+
   if (!validarTransaccion(form)) {
       return;
   }

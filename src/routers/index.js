@@ -248,7 +248,23 @@ router.post('/api/crear-categoria', async (req, res) =>{
         // Verificar el token de autenticación
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const uid = decodedToken.uid;
+
+        // Verificar si ya existe una categoría con el mismo nombre para el usuario
+        const categoriasRef = db.ref('categorias');
+        const snapshot = await categoriasRef.orderByChild('uid').equalTo(uid).once('value');
         
+        let categoriaExistente = false;
+        snapshot.forEach(childSnapshot => {
+            const categoria = childSnapshot.val();
+            if (categoria.nombre === req.body.nombre) {
+                categoriaExistente = true;
+            }
+        });
+        
+        if (categoriaExistente) {
+            return res.status(400).send('Ya existe una categoria con este nombre');
+        }
+
         // Obtenemos los datos del formulario desde la vista de index.hbs
         console.log(req.body);
         const categoria = {
@@ -257,7 +273,7 @@ router.post('/api/crear-categoria', async (req, res) =>{
         };
 
         // Guardamos la categoria en la base de datos de categorias
-        await db.ref('categorias').push(categoria);
+        await categoriasRef.push(categoria);
         res.status(200).redirect('/categorias');
     } catch (error) {
         console.error(error);
@@ -268,11 +284,32 @@ router.post('/api/crear-categoria', async (req, res) =>{
 // Ruta para editar una categoria según su id 
 router.post('/api/editar-categoria/:id', verifyToken, async (req, res) => {
   const categoriaId = req.params.id;
+  const idToken = req.headers.authorization.split('Bearer ')[1];
   const updatedCategoria = {
       nombre: req.body.nombre
   };
 
   try {
+      // Verificar el token de autenticación
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const uid = decodedToken.uid;
+
+      // Verificar si ya existe una categoría con el mismo nombre para el usuario
+      const categoriasRef = db.ref('categorias');
+      const snapshotAll = await categoriasRef.orderByChild('uid').equalTo(uid).once('value');
+      
+      let categoriaExistente = false;
+      snapshotAll.forEach(childSnapshot => {
+          const categoria = childSnapshot.val();
+          if (categoria.nombre === req.body.nombre) {
+              categoriaExistente = true;
+          }
+      });
+      
+      if (categoriaExistente) {
+          return res.status(400).send('Ya existe una categoria con este nombre');
+      }
+      
       // Obtén la categoria actual
       const snapshot = await db.ref('categorias').child(categoriaId).once('value');
       const categoria = snapshot.val();
