@@ -37,7 +37,17 @@ function selectOption(event) {
 // inserta las categorias al dropdown
 function cargarCategoriasDropdown(data) {
   const dropdownDivOptions = document.getElementById('container-options');
-  let optionsDropdown = ''
+  let optionsDropdown = `
+    <a href="#" class="dropdown-item" data-value="Comida" onclick="selectOption(event)"> 
+      Comida
+    </a>
+    <a href="#" class="dropdown-item" data-value="Transporte" onclick="selectOption(event)"> 
+      Transporte
+    </a>
+    <a href="#" class="dropdown-item" data-value="Entretenimiento" onclick="selectOption(event)"> 
+      Entretenimiento
+    </a>
+  `
   for (const [key, categoria] of Object.entries(data)) {
     optionsDropdown += `
     <div style="display: flex;">

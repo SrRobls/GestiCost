@@ -161,7 +161,12 @@ document.getElementById('crear-transaccion-form').addEventListener('submit', asy
 // inserta las categorias en el select 
 function cargarCategoriasSelectFiltro(data) {
   const categoriaSelect = document.getElementById('filter-categoria')
-  let options = '<option value="">Todas</option>'
+  let options = `
+    <option value="">Todas</option>
+    <option value="Comida">Comida</option>
+    <option value="Transporte">Transporte</option>
+    <option value="Entretenimiento">Entretenimiento</option>
+  `
   for (const [, categoria] of Object.entries(data)) {
     options += `
     <option value="${categoria.nombre}">${categoria.nombre}</option>
@@ -175,7 +180,11 @@ function cargarCategoriasSelectFiltro(data) {
 // inserta las categorias en el select 
 function cargarCategoriasSelect(data) {
   const categoriaSelect = document.getElementById('categoria-trans-edit')
-  let options = ''
+  let options = `
+    <option value="Comida">Comida</option>
+    <option value="Transporte">Transporte</option>
+    <option value="Entretenimiento">Entretenimiento</option>
+  `
   for (const [, categoria] of Object.entries(data)) {
     options += `
     <option value="${categoria.nombre}">${categoria.nombre}</option>
