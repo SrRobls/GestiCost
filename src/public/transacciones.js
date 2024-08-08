@@ -349,63 +349,6 @@ async function eliminar(id) {
   }
 }
 
-// Función para abrir el modal de edición
-// function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
-//   const modal = document.getElementById('modal-edit');
-//   document.getElementById('nombre-trans-edit').value = nombre;
-//   document.getElementById('costo-trans-edit').value = costo;
-//   document.getElementById('metodo-pago-edit').value = metodo;
-//   document.getElementById('categoria-trans-edit').value = categoria;
-//   document.getElementById('descripcion-trans-edit').value = descripcion;
-//   modal.classList.add('is-active');
-
-//   const form = document.getElementById('form-edit');
-//   form.onsubmit = async (e) => {
-//     e.preventDefault();
-
-//     if (!validarTransaccion(form)) {
-//       return;
-//     }
-
-//     const idToken = await localStorage.getItem('idToken');
-//     if (!idToken) {
-//       console.error('No se encontró el token de ID');
-//       return;
-//     }
-
-//     const data = {
-//       nombre: document.getElementById('nombre-trans-edit').value,
-//       costo: document.getElementById('costo-trans-edit').value,
-//       metodo_pago: document.getElementById('metodo-pago-edit').value,
-//       categoria: document.getElementById('categoria-trans-edit').value,
-//       descripcion: document.getElementById('descripcion-trans-edit').value
-//     };
-
-//     try {
-//       const response = await fetch('/api/editar-transaccion/' + id, {
-//         method: 'POST',
-//         headers: {
-//           'Authorization': `Bearer ${idToken}`,
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(data)
-//       });
-
-//       if (response.ok) {
-//         // Actualizar la lista de transacciones y mostrar los cambios
-//         transacciones = transacciones.map(transaccion =>
-//           transaccion.id === id ? { ...transaccion, ...data } : transaccion
-//         );
-//         aplicarFiltro();
-//       } else {
-//         console.error('Error al editar la transacción');
-//       }
-//     } catch (error) {
-//       console.error('Error al editar la transacción:', error);
-//     }
-//   };
-// }
-
 // Agregar evento al botón de quitar filtro
 document.getElementById("quitar-filtro-btn").onclick = () => {
   document.getElementById("filter-categoria").value = "";
