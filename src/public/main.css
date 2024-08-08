@@ -181,3 +181,25 @@ button svg {
     height: 90vh;
     width: 100%;
 }
+.filters {
+    display: flex;
+    gap:10rem; 
+    margin-bottom: 1rem;
+    margin-right: 40rem;
+    width: 300px;
+}
+.filters .field.is-grouped .control {
+    margin-right: 1rem;
+}
+  
+.filters .select, 
+.filters .button {
+  width: auto;
+}
+  
+.filters .label {
+  margin-bottom: 0.5rem;
+}
+  
+
+  

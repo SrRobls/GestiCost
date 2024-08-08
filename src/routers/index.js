@@ -300,6 +300,7 @@ router.post("/api/editar-meta/:id", verifyToken, async (req, res) => {
 });
 
 
+
 router.post("/api/eliminar-meta/:id", verifyToken, async (req, res) => {
   const metaId = req.params.id;
   console.log(metaId);
@@ -314,3 +315,4 @@ router.post("/api/eliminar-meta/:id", verifyToken, async (req, res) => {
   }
 });
 module.exports = router;
+
