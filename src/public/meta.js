@@ -10,68 +10,70 @@ function closeModalMeta() {
 }
 
 // Petición para crear una Meta
-document.getElementById("crear-meta-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const form = event.target;
+document
+  .getElementById("crear-meta-form")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = event.target;
 
-  // DESCOMENTAR CUANDO VALIDAR META ESTE HECHA
-  // if (!validarTransaccion(form)) {
-  //   return;
-  // }
+    // DESCOMENTAR CUANDO VALIDAR META ESTE HECHA
+    // if (!validarTransaccion(form)) {
+    //   return;
+    // }
 
-  const meta = {
-    nombre: form.nombre_meta.value,
-    objetivo: form.total_meta.value,
-    monto: form.monto_meta.value,
-  };
+    const meta = {
+      nombre: form.nombre_meta.value,
+      objetivo: form.total_meta.value,
+      monto: form.monto_meta.value,
+    };
 
-  const idToken = localStorage.getItem("idToken");
+    const idToken = localStorage.getItem("idToken");
 
-  if (!idToken) {
-    console.error("No se encontró el token de ID");
-    return;
-  }
-
-  try {
-    const [metaResponse, transaccionResponse] = await Promise.all([
-      fetch("/api/crear-meta", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify(meta),
-      }),
-      fetch("/api/crear-transaccion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          nombre: 'Ahorro de: ' + form.nombre_meta.value,
-          costo: form.monto_meta.value,
-          metodo_pago: "Para Mis Ahorros",
-          categoria: "Meta",
-          descripcion: "",
-        }),
-      }),
-    ]);
-
-    if (metaResponse.ok && transaccionResponse.ok) {
-      console.log("Transacción de meta creada exitosamente");
-      window.location.href = "/metas";
-    } else {
-      console.error(
-        "Error al crear la transacción:",
-        metaResponse.statusText,
-        transaccionResponse.statusText
-      );
+    if (!idToken) {
+      console.error("No se encontró el token de ID");
+      return;
     }
-  } catch (error) {
-    console.error("Error al crear la transacción:", error);
-  }
-});
+
+    try {
+      const [metaResponse, transaccionResponse] = await Promise.all([
+        fetch("/api/crear-meta", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(meta),
+        }),
+        fetch("/api/crear-transaccion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            nombre: "Ahorro de: " + form.nombre_meta.value,
+            costo: form.monto_meta.value,
+            metodo_pago: "Para Mis Ahorros",
+            categoria: "Meta",
+            descripcion: "",
+          }),
+        }),
+      ]);
+
+      if (metaResponse.ok && transaccionResponse.ok) {
+        console.log("Transacción de meta creada exitosamente");
+        window.location.href = "/metas";
+      } else {
+        console.error(
+          "Error al crear la transacción:",
+          metaResponse.statusText,
+          transaccionResponse.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Error al crear la transacción:", error);
+    }
+  });
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Obtener idToken del localStorage
@@ -94,17 +96,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         let metasHtml = ``;
         for (const [key, meta] of Object.entries(data)) {
           metasHtml += `
-                      <div>
-                        <strong>${meta.nombre}</strong><br>
-                        <strong>Objetivo a ahorrar: </strong><span>${meta.objetivo}</span><br>
-                        <strong>Monto actual: </strong><span>${meta.monto}</span><br>
-                        <div>
-                          <button onClick="eliminar_meta('${key}')" class="button is-danger">Eliminar</button>
-                          <button
-                            onclick="openModalMetaEdit('${key}', '${meta.nombre}', '${meta.objetivo}', '${meta.monto}');"
-                            class="button is-primary">Agregar Monto</button>
-                        </div>
-                      </div>
+                      <div class="card">
+        <strong style="padding-left: 1em; margin-top: 1em;">${meta.nombre}</strong><br>
+        <strong style="padding-left: 1em;">Objetivo a ahorrar: </strong><span>${meta.objetivo}</span><br>
+        <strong style="padding-left: 1em;">Monto actual: </strong><span>${meta.monto}</span><br>
+        <div style="padding: 1em;" class="button-group">
+            <button  onClick="eliminar_meta('${key}')" class="button is-danger">Eliminar</button>
+            <button  onclick="openModalMetaEdit('${key}', '${meta.nombre}', '${meta.objetivo}', '${meta.monto}');" class="button is-primary">Agregar Monto</button>
+        </div>
+    </div>
                     `;
         }
 
@@ -115,12 +115,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error al obtener las metas:", error);
     }
-
   } else {
     console.error("No se encontró el token de ID");
   }
-
-
 });
 
 // Petición para editar una meta
@@ -170,7 +167,7 @@ function openModalMetaEdit(id, nombre, objetivo, monto) {
               Authorization: `Bearer ${idToken}`,
             },
             body: JSON.stringify({
-              nombre: 'Ahorro de: ' + nombre,
+              nombre: "Ahorro de: " + nombre,
               costo: data.abono,
               metodo_pago: "Para Mis Ahorros",
               categoria: "Meta",
@@ -182,7 +179,10 @@ function openModalMetaEdit(id, nombre, objetivo, monto) {
             console.log("Transacción de meta creada exitosamente");
             window.location.href = "/metas";
           } else {
-            console.error("Error al crear la transacción:", transaccionResponse.statusText);
+            console.error(
+              "Error al crear la transacción:",
+              transaccionResponse.statusText
+            );
           }
         } catch (error) {
           console.error("Error al crear la transacción:", error);
@@ -198,34 +198,33 @@ function openModalMetaEdit(id, nombre, objetivo, monto) {
 
 // Petición para eliminar una transacción
 async function eliminar_meta(id) {
-  const idToken = await localStorage.getItem('idToken');
+  const idToken = await localStorage.getItem("idToken");
   if (!idToken) {
-      console.error('No se encontró el token de ID');
-      return;
+    console.error("No se encontró el token de ID");
+    return;
   }
   try {
-      const response = await fetch('/api/eliminar-meta/' + id, {
-          method: 'POST',
-          headers: {
-              'Authorization': `Bearer ${idToken}`
-          }
-      });
+    const response = await fetch("/api/eliminar-meta/" + id, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
 
-      if (response.ok) {
-          window.location.href = '/metas';
-      } else {
-          console.error('Error al eliminar la metas');
-      }
+    if (response.ok) {
+      window.location.href = "/metas";
+    } else {
+      console.error("Error al eliminar la metas");
+    }
   } catch (error) {
-      console.error('Error al eliminar la metas:', error);
+    console.error("Error al eliminar la metas:", error);
   }
 }
 
 function closeModalMetaEdit() {
-    const modal = document.getElementById('modal-meta-edit');
-    modal.classList.remove('is-active');
+  const modal = document.getElementById("modal-meta-edit");
+  modal.classList.remove("is-active");
 }
-
 
 // MODIFICAR Y DESCOMENTAR
 // function validarMeta(form) {
