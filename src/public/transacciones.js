@@ -2,6 +2,7 @@
 function validarTransaccion(form) {
   const nombreInput = form.nombre.value.trim();
   const costoInput = form.costo.value;
+  const categoriaInput = form.categoria.value;
   const descripcionInput = form.descripcion.value;
   const longitudMaxima = 70; // Define la longitud máxima permitida para la descripción
 
@@ -15,6 +16,12 @@ function validarTransaccion(form) {
   if (isNaN(costoInput) || costoInput.trim() === '' || parseFloat(costoInput) <= 0) {
       alert('El costo debe ser un número positivo.');
       return false;
+  }
+
+  // Validacion de categoria
+  if (categoriaInput === ''){
+    alert('La categoria es obligatoria.');
+    return false;
   }
 
   // Validación de la longitud de la descripción
