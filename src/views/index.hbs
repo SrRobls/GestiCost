@@ -89,7 +89,7 @@
 
 <div class="modal" id="modal">
   <div class="modal-background"></div>
-  <div class="modal-content">
+  <div class="modal-content" style="overflow-y: hidden !important;">
     <div class="section crear-trans">
       <form id="crear-transaccion-form">
         <div class="columns is-multiline">
@@ -128,14 +128,29 @@
 
           <div class="column is-half">
             <div class="field">
-              <label class="label" for="categoria-trans">Categoría</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select id="categoria-trans" name="categoria">
-                    <option value="comida">Comida</option>
-                    <option value="transporte">Transporte</option>
-                    <option value="entretenimiento">Entretenimiento</option>
-                  </select>
+              <label for="dropdown-trigger" class="label">Categoría:</label>
+
+              <input type="hidden" id="categoria-seleccionada" name="categoria" value="">
+              <div class="dropdown control" style="width: 100% !important">
+                <div class="dropdown-trigger" style="width: 100% !important">
+                  <button id="dropdown-button" type="button"  class="button is-fullwidth " aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span id="dropdown-text" class="has-text-left" style="width: 90%; overflow: hidden;"></span>
+                    <span class="icon is-small">
+                        <i id="dropdown-icon" class="fa fa-angle-right"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div  class="dropdown-content">
+                    <div id="container-options">
+
+                    </div>
+                    <hr class="dropdown-divider" />
+                    
+                    <button type="button" class="button is-ghost" onclick="toggleModalCrearCategoria();">      
+                      <span>Agregar Categoria</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -168,7 +183,7 @@
 <div id="transacciones" class="transacciones"></div>
 <div class="modal" id="modal-edit">
   <div class="modal-background"></div>
-  <div class="modal-content">
+  <div class="modal-content" style="overflow-y: hidden !important;">
     <div class="section crear-trans">
       <form id="form-edit" method="POST">
         <div class="columns is-multiline">
@@ -211,9 +226,6 @@
               <div class="control">
                 <div class="select is-fullwidth">
                   <select id="categoria-trans-edit" name="categoria">
-                    <option value="comida">Comida</option>
-                    <option value="transporte">Transporte</option>
-                    <option value="entretenimiento">Entretenimiento</option>
                   </select>
                 </div>
               </div>
@@ -243,6 +255,81 @@
     </div>
   </div>
 </div>
+
+<div id="reportModal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Informe</p>
+      <button class="delete" aria-label="close" onclick="closeModalReport()"></button>
+    </header>
+    <section class="modal-card-body" id="reportContent">
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" onclick="closeModalReport()">Cerrar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" id="modal-crear-categoria">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="section">
+      <form id="crear-categoria-form">
+        <div class="columns is-justify-content-center">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-categoria">Nombre de Categoria</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-categoria" name="nombre" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped is-justify-content-center">
+          <div class="control">
+            <button class="button is-link" type="submit">Enviar</button>
+          </div>
+          <div class="control">
+            <button onclick="toggleModalCrearCategoria()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="modal-edit-categoria">
+  <div class="modal-background"></div>
+  <div class="modal-content" style="overflow-x: hidden;">
+    <div class="section px-2">
+      <form id="form-edit-categoria" method="POST">
+        <div class="columns is-justify-content-center">
+          <div class="column is-half">
+            <div class="field">
+              <label class="label" for="nombre-categoria">Nombre de Categoria</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Nombre" id="nombre-categoria-edit" name="nombre" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped is-justify-content-center">
+          <div class="control">
+            <button class="button is-link" type="submit">Editar</button>
+          </div>
+          <div class="control">
+            <button onclick="closeModalEditCategoria()" class="button is-light" type="button">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <script>
   const idToken = localStorage.getItem('idToken');

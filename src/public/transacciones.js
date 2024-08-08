@@ -2,6 +2,7 @@
 function validarTransaccion(form) {
   const nombreInput = form.nombre.value.trim();
   const costoInput = form.costo.value;
+  const categoriaInput = form.categoria.value;
   const descripcionInput = form.descripcion.value;
   const longitudMaxima = 70; // Define la longitud máxima permitida para la descripción
 
@@ -12,12 +13,14 @@ function validarTransaccion(form) {
   }
 
   // Validación del costo
-  if (
-    isNaN(costoInput) ||
-    costoInput.trim() === "" ||
-    parseFloat(costoInput) <= 0
-  ) {
-    alert("El costo debe ser un número positivo.");
+  if (isNaN(costoInput) || costoInput.trim() === '' || parseFloat(costoInput) <= 0) {
+      alert('El costo debe ser un número positivo.');
+      return false;
+  }
+
+  // Validacion de categoria
+  if (categoriaInput === ''){
+    alert('La categoria es obligatoria.');
     return false;
   }
 
@@ -98,17 +101,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error al obtener las transacciones:", error);
     }
+
+    const categorias = await obtenerCategorias();
+    if(categorias){
+      cargarCategoriasSelectFiltro(categorias);
+    }
   } else {
     console.error("No se encontró el token de ID");
   }
 });
 
 // Petición para crear una transacción
-document
-  .getElementById("crear-transaccion-form")
-  .addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const form = event.target;
+document.getElementById('crear-transaccion-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const form = event.target;
+
+  console.log(form)
 
     if (!validarTransaccion(form)) {
       return;
@@ -145,20 +153,64 @@ document
       } else {
         console.error("Error al crear la transacción:", response.statusText);
       }
-    } catch (error) {
-      console.error("Error al crear la transacción:", error);
-    }
-  });
+  } catch (error) {
+      console.error('Error al crear la transacción:', error);
+  }
+});
+
+// inserta las categorias en el select 
+function cargarCategoriasSelectFiltro(data) {
+  const categoriaSelect = document.getElementById('filter-categoria')
+  let options = `
+    <option value="">Todas</option>
+    <option value="Comida">Comida</option>
+    <option value="Transporte">Transporte</option>
+    <option value="Entretenimiento">Entretenimiento</option>
+  `
+  for (const [, categoria] of Object.entries(data)) {
+    options += `
+    <option value="${categoria.nombre}">${categoria.nombre}</option>
+    `
+  }
+
+  // insertar options al select
+  categoriaSelect.innerHTML = options;
+
+}
+// inserta las categorias en el select 
+function cargarCategoriasSelect(data) {
+  const categoriaSelect = document.getElementById('categoria-trans-edit')
+  let options = `
+    <option value="Comida">Comida</option>
+    <option value="Transporte">Transporte</option>
+    <option value="Entretenimiento">Entretenimiento</option>
+  `
+  for (const [, categoria] of Object.entries(data)) {
+    options += `
+    <option value="${categoria.nombre}">${categoria.nombre}</option>
+    `
+  }
+
+  // insertar options al select
+  categoriaSelect.innerHTML = options;
+
+}
 
 // Petición para editar una transacción
-function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
-  const modal = document.getElementById("modal-edit");
-  document.getElementById("nombre-trans-edit").value = nombre;
-  document.getElementById("costo-trans-edit").value = costo;
-  document.getElementById("metodo-pago-edit").value = metodo;
-  document.getElementById("categoria-trans-edit").value = categoria;
+async function openModalEdit(id, nombre, costo, metodo, categoria, descripcion) {
+  const modal = document.getElementById('modal-edit');
+  document.getElementById('nombre-trans-edit').value = nombre;
+  document.getElementById('costo-trans-edit').value = costo;
+  document.getElementById('metodo-pago-edit').value = metodo;
   document.getElementById("descripcion-trans-edit").value = descripcion;
-  modal.classList.add("is-active");
+  const categoriaSelect = document.getElementById('categoria-trans-edit')
+  const data = await obtenerCategorias();
+  if(data){
+    cargarCategoriasSelect(data);
+  }
+  categoriaSelect.value = categoria;
+
+  modal.classList.add('is-active');
 
   const form = document.getElementById("form-edit");
   form.onsubmit = async (e) => {

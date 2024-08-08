@@ -44,7 +44,7 @@ router.get("/api/transacciones", async (req, res) => {
       .equalTo(uid)
       .once("value");
     const transacciones = snapshot.val();
-    console.log(transacciones);
+    
     res.json(transacciones);
   } catch (error) {
     console.error("Error al verificar el token:", error);
@@ -96,7 +96,6 @@ router.post("/api/crear-transaccion", async (req, res) => {
     const uid = decodedToken.uid;
 
     // Obtenemos los datos del formulario desde la vista de index.hbs
-    console.log(req.body);
     const transaccion = {
       uid: uid, // Incluir el UID del usuario en la transacción
       nombre: req.body.nombre,
@@ -176,7 +175,6 @@ router.post("/api/editar-transaccion/:id", verifyToken, async (req, res) => {
 // Ruta para eliminar una transacción según su id y verificación de token
 router.post("/api/eliminar-transaccion/:id", verifyToken, async (req, res) => {
   const transaccionId = req.params.id;
-  console.log(transaccionId);
 
   try {
     // Eliminar la transacción de la base de datos de Firebase
@@ -215,7 +213,6 @@ router.post("/api/crear-meta", async (req, res) => {
     const uid = decodedToken.uid;
 
     // Obtenemos los datos del formulario desde la vista de index.hbs
-    console.log(req.body);
     const meta = {
       uid: uid, // Incluir el UID del usuario en la transacción
       nombre: req.body.nombre,
@@ -249,7 +246,7 @@ router.get("/api/metas", async (req, res) => {
       .equalTo(uid)
       .once("value");
     const metas = snapshot.val();
-    console.log(metas);
+    
     res.json(metas);
   } catch (error) {
     console.error("Error al verificar el token:", error);
@@ -303,8 +300,6 @@ router.post("/api/editar-meta/:id", verifyToken, async (req, res) => {
 
 router.post("/api/eliminar-meta/:id", verifyToken, async (req, res) => {
   const metaId = req.params.id;
-  console.log(metaId);
-
   try {
     // Eliminar la transacción de la base de datos de Firebase
     await db.ref("metas").child(metaId).remove();
@@ -314,5 +309,158 @@ router.post("/api/eliminar-meta/:id", verifyToken, async (req, res) => {
     res.status(500).send("Error al eliminar la transacción");
   }
 });
+
+//Categorias
+
+
+// para obtener las categorias de la base de datos de Firebase
+router.get('/api/categorias', async (req, res) => {
+  const idToken = req.headers.authorization.split('Bearer ')[1];
+
+  try {
+      // Verificar el token de autenticación
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const uid = decodedToken.uid;
+
+      // Obtener las categorias del usuario autenticado
+      const snapshot = await db.ref('categorias').orderByChild('uid').equalTo(uid).once('value');
+      const categorias = snapshot.val();
+      
+      res.json(categorias);
+
+      
+  } catch (error) {
+      console.error('Error al verificar el token:', error);
+      res.status(401).json({ error: 'No autorizado' });
+  }
+});
+
+
+// Para crear una nueva categoria
+router.post('/api/crear-categoria', async (req, res) =>{
+    const idToken = req.headers.authorization.split('Bearer ')[1];
+    
+    try {
+        // Verificar el token de autenticación
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+
+        // Verificar si ya existe una categoría con el mismo nombre para el usuario
+        const categoriasRef = db.ref('categorias');
+        const snapshot = await categoriasRef.orderByChild('uid').equalTo(uid).once('value');
+        
+        let categoriaExistente = false;
+        snapshot.forEach(childSnapshot => {
+            const categoria = childSnapshot.val();
+            if (categoria.nombre === req.body.nombre) {
+                categoriaExistente = true;
+            }
+        });
+        
+        if (categoriaExistente) {
+            return res.status(400).send('Ya existe una categoria con este nombre');
+        }
+
+        // Obtenemos los datos del formulario desde la vista de index.hbs
+        const categoria = {
+            uid: uid,  // Incluir el UID del usuario en la transacción
+            nombre: req.body.nombre,
+        };
+
+        // Guardamos la categoria en la base de datos de categorias
+        await categoriasRef.push(categoria);
+        res.status(200).send(true);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al guardar la categoria');
+    }
+});
+
+// Ruta para editar una categoria según su id 
+router.post('/api/editar-categoria/:id', verifyToken, async (req, res) => {
+  const categoriaId = req.params.id;
+  const idToken = req.headers.authorization.split('Bearer ')[1];
+  const updatedCategoria = {
+      nombre: req.body.nombre
+  };
+
+  try {
+      // Verificar el token de autenticación
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const uid = decodedToken.uid;
+
+      // Verificar si ya existe una categoría con el mismo nombre para el usuario
+      const categoriasRef = db.ref('categorias');
+      const snapshotAll = await categoriasRef.orderByChild('uid').equalTo(uid).once('value');
+      
+      let categoriaExistente = false;
+      snapshotAll.forEach(childSnapshot => {
+          const categoria = childSnapshot.val();
+          if (categoria.nombre === req.body.nombre) {
+              categoriaExistente = true;
+          }
+      });
+      
+      if (categoriaExistente) {
+          return res.status(400).send('Ya existe una categoria con este nombre');
+      }
+      
+      // Obtén la categoria actual
+      const snapshot = await db.ref('categorias').child(categoriaId).once('value');
+      const categoria = snapshot.val();
+
+      if (!categoria) {
+          return res.status(404).send('Categoria no encontrada');
+      }
+
+      // Verifica que el uid de la categoria coincida con el uid del usuario autenticado
+      if (categoria.uid !== req.uid) {
+          return res.status(403).send('No autorizado para editar esta categoria');
+      }
+
+      await db.ref('categorias').child(categoriaId).update(updatedCategoria);
+
+      // actualizar categoria de las transacciones que tuvieran asignada el nombre anterior
+      const ref = db.ref('transacciones');
+      const snapshotTrans = await ref
+        .orderByChild('uid')
+        .equalTo(uid)
+        .once('value');
+
+      if (snapshotTrans.exists()) {
+        // const updates = [];
+        snapshotTrans.forEach(async childSnapshot => {
+          const transaccion = childSnapshot.val();
+          if (transaccion.categoria === categoria.nombre) {
+            // Cambiar la categoría
+            const updatedTransaccion = { ...transaccion, categoria: req.body.nombre };
+            
+          await db.ref('transacciones').child(childSnapshot.key).update(updatedTransaccion);
+          }
+        });
+      }
+
+      // Actualiza la categoria
+      return res.status(200).send(true);
+  } catch (error) {
+      console.error('Error al editar la categoria:', error);
+      res.status(500).send('Error al editar la categoria');
+  }
+});
+
+// Ruta para eliminar una categoria según su id y verificación de token
+router.post('/api/eliminar-categoria/:id', verifyToken, async (req, res) => {
+  const categoriaId = req.params.id;
+  
+  try {
+      // Eliminar la categoria de la base de datos de Firebase
+      await db.ref('categorias').child(categoriaId).remove();
+      res.status(200).send(true);
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Error al eliminar la categorias');
+  }
+});
+
 module.exports = router;
 
