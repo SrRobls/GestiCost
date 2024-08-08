@@ -12,6 +12,79 @@
     </span>
   </button>
 </div>
+<br>
+<br>
+
+<div id="reportModal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Informe</p>
+      <button class="delete" aria-label="close" onclick="closeModalReport()"></button>
+    </header>
+    <section class="modal-card-body" id="reportContent">
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" onclick="closeModalReport()">Cerrar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="column is-half-mobile">
+  <div class="filters">
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" for="filter-categoria">Categoría:</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <div class="select">
+              <select id="filter-categoria">
+                <option value="">Todas</option>
+                <option value="comida">Comida</option>
+                <option value="transporte">Transporte</option>
+                <option value="entretenimiento">Entretenimiento</option>
+                <option value="Meta">Meta</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field-label is-normal">
+        <label style="width: 150px;" class="label" for="filter-metodo">Método de Pago: </label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <div class="select">
+              <select id="filter-metodo">
+                <option value="">Todos</option>
+                <option value="credito">Crédito</option>
+                <option value="debito">Débito</option>
+                <option value="efectivo">Efectivo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <button class="button mx-2" id="apply-filters-btn">Aplicar Filtros</button>
+          </div>
+        </div>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <button class="button mx-1" id="quitar-filtro-btn">Quitar Filtro</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <div class="modal" id="modal">
@@ -87,7 +160,8 @@
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
-                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans" name="descripcion"></textarea>
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans"
+                  name="descripcion"></textarea>
               </div>
             </div>
           </div>
@@ -107,7 +181,6 @@
 </div>
 
 <div id="transacciones" class="transacciones"></div>
-
 <div class="modal" id="modal-edit">
   <div class="modal-background"></div>
   <div class="modal-content" style="overflow-y: hidden !important;">
@@ -163,7 +236,8 @@
             <div class="field">
               <label class="label" for="descripcion-trans">Descripción</label>
               <div class="control">
-                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit" name="descripcion"></textarea>
+                <textarea class="textarea" placeholder="Descripción" id="descripcion-trans-edit"
+                  name="descripcion"></textarea>
               </div>
             </div>
           </div>
@@ -258,16 +332,11 @@
 
 
 <script>
-
   const idToken = localStorage.getItem('idToken');
-  // TODO: Hacer alerta si no hay sesion
+  // TODO: Hacer alerta si no hay sesión
   if (!idToken) {
     alert('Debes iniciar sesión');
     window.location.href = '/';
   }
 
-
-
-
 </script>
-

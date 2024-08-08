@@ -16,18 +16,6 @@ function closeModalEdit() {
     modal.classList.remove('is-active');
 }
 
-// Función para abrir el modal de reporte
-function openModalReport() {
-  const modal = document.getElementById('reportModal');
-  modal.classList.add('is-active');
-  generarReporte();
-}
-
-// Función para cerrar el modal de reporte
-function closeModalReport() {
-  const modal = document.getElementById('reportModal');
-  modal.classList.remove('is-active');
-}
 // la funcion de abrir modal-edit esta en trasacciones.js que ese mismo tambine hace la peticion
 
 const cerrarSesion = () => {
@@ -65,5 +53,18 @@ const checkTokenValidity = () => {
       console.error('Error checking token validity:', error);
     });
 };
+
+// Función para abrir el modal de reporte
+function openModalReport() {
+  const modal = document.getElementById('reportModal');
+  modal.classList.add('is-active');
+  generarReporte();
+}
+
+// Función para cerrar el modal de reporte
+function closeModalReport() {
+  const modal = document.getElementById('reportModal');
+  modal.classList.remove('is-active');
+}
 
 checkTokenValidity();

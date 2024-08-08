@@ -5,7 +5,8 @@
 .button-container {
     display: flex;
     justify-content: flex-start;
-  }
+}
+
 
 .cssbuttons-io {
     margin: 10px;
@@ -21,9 +22,10 @@
     color: ghostwhite;
     overflow: hidden;
 }
+
 .cssbuttons-io:first-child {
     margin-left: 0;
-  }
+}
 
 .cssbuttons-io svg {
     width: 1.2em;
@@ -178,6 +180,57 @@ button svg {
     align-items: center;
     height: 90vh;
     width: 100%;
+}
+
+.filters {
+    display: flex;
+    gap: 10rem;
+    margin-bottom: 1rem;
+    margin-right: 40rem;
+    width: 300px;
+}
+
+.filters .field.is-grouped .control {
+    margin-right: 1rem;
+}
+
+.filters .select,
+.filters .button {
+    width: auto;
+}
+
+.filters .label {
+    margin-bottom: 0.5rem;
+}
+
+
+card {
+    background-color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+    color: white;
+}
+
+.button-group {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.button:hover {
+    opacity: 0.9;
 }
 
 
